@@ -5,6 +5,10 @@ using namespace std;
 
 int main() {
     cout << "Get A++ in C++\n";
-    cout << "We are failing:";
+    for (int i = 0; i < 10; i++)
+    {
+        cout << "Die"<<endl;
+    }
+    
     return 0;
 }
