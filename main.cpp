@@ -22,9 +22,5 @@ int main() {
     readF.close();
     return 0;
 
-    //asdjahskdasjkdhkasd
-    // sajkdhkjasd
-    // sdahsdkjhk
-    // sdkasdhk
-    // kjhasjd
+
 }
