@@ -4,7 +4,7 @@
 #include <iomanip>
 using namespace std;
 
-int main() {
+int main(){
 
     ifstream readF;
     string readFile;
