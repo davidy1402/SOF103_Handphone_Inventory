@@ -5,19 +5,20 @@
 using namespace std;
 
 int main() {
-    ofstream inventory;
+
     ifstream readF;
     string readFile;
 
-    inventory.open ("inventory.txt");                               // Open File
-    readf.open ("inventory.txt");                                   // To Read File
-    
-    if (inventory)                                                  //Check if file opened
-        cout << "File has been opened succesfully!"<<endl; 
-    else 
-        cout << "File Error!!"<<endl;
+    readF.open ("inventory.txt");
 
-    getline(readF,readFile);                                        //Extract File
-    cout << readFile;
+    if (readF)                                                  //Check if file opened
+        cout << "File has been read succesfully!"<<endl; 
+    else 
+        cout << "File read Error!!"<<endl;
+
+    while(getline(readF,readFile)){                                        //Extract File
+    cout << readFile<<endl;}
+
+    readF.close();
     return 0;
 }
