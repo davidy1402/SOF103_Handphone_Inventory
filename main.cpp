@@ -10,7 +10,8 @@ int main() {
     string readFile;
 
     inventory.open ("inventory.txt");                               // Open File
-
+    readf.open ("inventory.txt");                                   // To Read File
+    
     if (inventory)                                                  //Check if file opened
         cout << "File has been opened succesfully!"<<endl; 
     else 
