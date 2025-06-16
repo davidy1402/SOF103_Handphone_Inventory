@@ -1,51 +1,50 @@
-Unique ID,Product Name,Price (MYR)
-1,Samsung Galaxy S25 Ultra,5999
-2,Samsung Galaxy S25+,4999
-3,Samsung Galaxy S25,3999
-4,Samsung Galaxy Z Flip6,4499
-5,Samsung Galaxy Z Fold6,6999
-6,Samsung Galaxy A56 5G,1999
-7,Samsung Galaxy A35 5G,1499
-8,Samsung Galaxy A26 5G,1199
-9,Samsung Galaxy S25 Edge,4799
-10,Samsung Galaxy S25 FE,3700
-11,Huawei Pura 70,4899
-12,Huawei Pura 70 Pro,3699
-13,Huawei Nova 13,1799
-14,Huawei Nova 13i,1299
-15,Huawei Nova 12s,1999
-16,Huawei Nova 12 SE,1299
-17,Huawei Mate X6,8688
-18,Huawei Mate X3,8888
-19,Huawei Nova 12i,1299
-20,Huawei Nova 13 Pro,2399
-21,iPhone 16e,2999
-22,iPhone 16,4499
-23,iPhone 16 Pro,4999
-24,iPhone 16 Pro Max,5209
-25,iPhone 15,2699
-26,iPhone 14,2299
-27,iPhone 13,1999
-28,iPhone 12,1079
-29,iPhone 11,950
-30,iPhone SE,1599
-31,OPPO A5 Pro,799
-32,OPPO A5 Pro 5G,1099
-33,OPPO Reno12 5G,1999
-34,OPPO Reno12 Pro 5G,2599
-35,OPPO Reno 13 F 5G,1399
-36,OPPO Reno13 5G,2299
-37,OPPO Reno 13 Pro 5G,2999
-38,OPPO Find N3 Flip,4309
-39,OPPO Find N3,3999
-40,OPPO Find N5,7999
-41,Xiaomi Civi 3,799
-42,Xiaomi Civi 4,899
-43,Xiaomi 13 Lite,1499
-44,Xiaomi 13T,1899
-45,Xiaomi 13T Pro,2299
-46,Xiaomi 14 Lite,1699
-47,Xiaomi 14T,2499
-48,Xiaomi 14,2999
-49,Xiaomi 14T Pro,3299
-50,Xiaomi 15,4299
+P001 Samsung_Galaxy_S25_Ultra 5999 50 10
+P002 Samsung_Galaxy_S25+ 4999 45 10
+P003 Samsung_Galaxy_S25 3999 40 10
+P004 Samsung_Galaxy_Z_Flip6 4499 35 10
+P005 Samsung_Galaxy_Z_Fold6 6999 30 10
+P006 Samsung_Galaxy_A56_5G 1999 25 10
+P007 Samsung_Galaxy_A35_5G 1499 20 5
+P008 Samsung_Galaxy_A26_5G 1199 15 5
+P009 Samsung_Galaxy_S25_Edge 4799 18 5
+P010 Samsung_Galaxy_S25_FE 3700 22 5
+P011 Huawei_Pura_70 4899 33 10
+P012 Huawei_Pura_70_Pro 3699 28 10
+P013 Huawei_Nova_13 1799 40 10
+P014 Huawei_Nova_13i 1299 37 5
+P015 Huawei_Nova_12s 1999 29 5
+P016 Huawei_Nova_12_SE 1299 33 5
+P017 Huawei_Mate_X6 8688 10 3
+P018 Huawei_Mate_X3 8888 8 3
+P019 Huawei_Nova_12i 1299 25 5
+P020 Huawei_Nova_13_Pro 2399 26 5
+P021 iPhone_16e 2999 35 10
+P022 iPhone_16 4499 30 10
+P023 iPhone_16_Pro 4999 28 10
+P024 iPhone_16_Pro_Max 5209 24 10
+P025 iPhone_15 2699 26 10
+P026 iPhone_14 2299 27 10
+P027 iPhone_13 1999 29 10
+P028 iPhone_12 1079 15 5
+P029 iPhone_11 950 12 5
+P030 iPhone_SE 1599 18 5
+P031 OPPO_A5_Pro 799 45 15
+P032 OPPO_A5_Pro_5G 1099 40 15
+P033 OPPO_Reno12_5G 1999 35 10
+P034 OPPO_Reno12_Pro_5G 2599 25 10
+P035 OPPO_Reno_13_F_5G 1399 20 5
+P036 OPPO_Reno13_5G 2299 18 5
+P037 OPPO_Reno_13_Pro_5G 2999 15 5
+P038 OPPO_Find_N3_Flip 4309 12 5
+P039 OPPO_Find_N3 3999 14 5
+P040 OPPO_Find_N5 7999 6 2
+P041 Xiaomi_Civi_3 799 30 10
+P042 Xiaomi_Civi_4 899 28 10
+P043 Xiaomi_13_Lite 1499 25 10
+P044 Xiaomi_13T 1899 22 10
+P045 Xiaomi_13T_Pro 2299 20 10
+P046 Xiaomi_14_Lite 1699 18 5
+P047 Xiaomi_14T 2499 16 5
+P048 Xiaomi_14 2999 14 5
+P049 Xiaomi_14T_Pro 3299 10 5
+P050 Xiaomi_15 4299 8 3
