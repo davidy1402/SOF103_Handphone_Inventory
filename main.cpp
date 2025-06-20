@@ -202,17 +202,17 @@ void deleteProduct(Product products[],int& productcount) {
 }
 /*---------------------------------Function to check-stock product data from array class---------------------------*/
 void checkLowStock(Product products[], int count) {
-    bool okStock = true;
-    int lowDataCount = 0;
+    bool okStock = true; //Check if any products are low
+    int lowDataCount = 0; // Track low products
     for (int i = 0; i < count; i++) {
-        if (products[i].getQty() <= products[i].getReorderLevel()) {
+        if (products[i].getQty() <= products[i].getReorderLevel()) { //Compares reorder level and qty
             cout << "Low stock found at: \n";
-            products[i].displayProduct();   
+            products[i].displayProduct();   //displays
             okStock = false;   
             lowDataCount++;      
         }
     }
-    if (okStock)
+    if (okStock) //Notifies how many products require restock
     {
         cout << "All products are not low stocked!\n";
     } else {
