@@ -31,7 +31,7 @@ public:
     }
 
     string getId() const { return id; } // Return product ID
-    string getName() const { return name; } // Returnproduct name
+    string getName() const { return name; } // Return product name
     float getPrice() const { return price; } // Return product price
     int getQty() const { return qty; } // Return product quantity
     int getReorderLevel() const { return reorderlvl; } // Return product reorder level
@@ -40,7 +40,7 @@ public:
 
 
 
-/*---------------------------------Function to load product data from a file-------------------------------*/ 
+/*---------------------------------Function to load & save product data from a file-------------------------------*/ 
 int loadData(Product products[]) {
     ifstream file("inventory.txt"); // Open the file for reading
     if (!file) { // Check if the file opened successfully
@@ -66,7 +66,6 @@ int loadData(Product products[]) {
     file.close();
     return count;
 }
-
 void saveData(Product products[],int count){
     ofstream file("inventory.txt");
     for(int i=0;i<count;i++){
@@ -78,6 +77,8 @@ void saveData(Product products[],int count){
     }
     file.close();
 }
+/*---------------------------------Function to edit product data from array class---------------------------------*/
+
 void addProduct(Product products[],int& productcount){
 string id, name;
     float price;
@@ -199,7 +200,27 @@ void deleteProduct(Product products[],int& productcount) {
         cout<<"Not found!\n";
     }
 }
-//--------------------------------------------------------------------------------------------------------//
+/*---------------------------------Function to check-stock product data from array class---------------------------*/
+void checkLowStock(Product products[], int count) {
+    bool okStock = true;
+    int lowDataCount = 0;
+    for (int i = 0; i < count; i++) {
+        if (products[i].getQty() <= products[i].getReorderLevel()) {
+            cout << "Low stock found at: \n";
+            products[i].displayProduct();   
+            okStock = false;   
+            lowDataCount++;      
+        }
+    }
+    if (okStock)
+    {
+        cout << "All products are not low stocked!\n";
+    } else {
+        cout << lowDataCount << " products require urgent restock!\n";
+    }
+    
+}
+//-----------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -231,7 +252,8 @@ int main(){
         cout << "2. Delete product(s)\n";
         cout << "3. Update a product\n";
         cout << "4. Display product\n";
-        cout << "5. Exit\n";
+        cout << "5. Check Low Stock\n";
+        cout << "6. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -257,10 +279,12 @@ int main(){
                             cout << "No products loaded.\n";
                      } 
                      break;
-            case 5: cout << "Exiting...\n"; break;
+            case 5: checkLowStock(products,productcount);break;
+            case 6: cout << "Exiting...\n"; break;
+            
             default: cout << "Invalid choice. Try again.\n";
         }
-    } while (choice != 5);
+    } while (choice != 6);
 
     return 0;
 }
