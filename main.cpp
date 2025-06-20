@@ -47,7 +47,6 @@ int loadData(Product products[]) {
         cout << "Error: Unable to open file.\n"; // Display error message if file cannot be opened
         return 0;
     }
-    //ooooo
     string id, name;
     float price;
     int qty, reorder;
