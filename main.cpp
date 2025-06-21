@@ -104,24 +104,31 @@ string id, name;
         cout << "Product name cannot be empty.\n";
         return;
     }
+
     cout<<"Enter the prices: ";
-    cin >>price;
-    if (price<0) {
-        cout << "Invalid! Please enter it again.\n";
-        return;
+    if (!(cin >> price) || price < 0) {
+    cout << "Invalid input. Please enter it again.\n";
+    cin.clear();
+    cin.ignore(1000, '\n');
+    return;
     }
+
     cout<<"Enter the quantity: ";
-    cin>> quantity;
-    if (quantity<0) {
-        cout << "Invalid! Please enter it again.\n";
-        return;
+    if (!(cin >> quantity) || quantity < 0) {
+    cout << "Invalid input. Please enter it again.\n";
+    cin.clear();
+    cin.ignore(1000, '\n');
+    return;
     }
+
     cout<< "Enter the re-order level: ";
-    cin>>reorder;
-    if (reorder<0) {
-        cout << "Invalid! Please enter it again.\n";
-        return;
+    if (!(cin >> reorder) || reorder < 0) {
+    cout << "Invalid input. Please enter it again.\n";
+    cin.clear();
+    cin.ignore(1000, '\n');
+    return;
     }
+
     products[productcount].setProduct(id, name, price, quantity, reorder);
     productcount++;
     saveData(products,productcount);
@@ -148,25 +155,29 @@ void updateProduct(Product products[],int productcount) {
             }
 
             cout<<"Enter the new prices: ";
-            cin>>price;
-            if (price < 0) {
-                cout << "Invalid! Please enter it again.\n";
-                return;
-            }
+            if (!(cin >> price) || price < 0) {
+              cout << "Invalid input. Please enter it again.\n";
+              cin.clear();
+              cin.ignore(1000, '\n');
+              return;
+              }
 
             cout<<"Enter the new quantity: ";
             cin>>quantity;
-            if (quantity < 0) {
-                cout << "Invalid! Please enter it again.\n";
-                return;
-            }
+            if (!(cin >> quantity) || quantity < 0) {
+              cout << "Invalid input. Please enter it again.\n";
+              cin.clear();
+              cin.ignore(1000, '\n');
+              return;
+              }
 
             cout<<"Enter the new reorder level: ";
-            cin>>reorder;
-            if (reorder < 0) {
-                cout << "Invalid! Please enter it again.\n";
-                return;
-            }
+             if (!(cin >> reorder) || reorder < 0) {
+               cout << "Invalid input. Please enter it again.\n";
+               cin.clear();
+               cin.ignore(1000, '\n');
+               return;
+               }
 
             products[i].setProduct(id,name, price, quantity, reorder);
             saveData(products,productcount);
