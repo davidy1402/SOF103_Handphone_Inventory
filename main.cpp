@@ -135,7 +135,7 @@ void updateProduct(Product products[],int productcount) {
     cin >> id;
 
      for (int i=0;i<productcount;i++) {
-        if (products[i].getId() == id) {
+        if (products[i].getId() == id) { //HERE NEED TO FIND EVERY PRODUCT CONTAINING THE INPUT,eg. cin>>13 will show P013, P213, P313 etc.
             string name;
             float price;
             int quantity, reorder;
@@ -206,7 +206,7 @@ void checkLowStock(Product products[], int count) {
     int lowDataCount = 0; // Track low products
     for (int i = 0; i < count; i++) {
         if (products[i].getQty() <= products[i].getReorderLevel()) { //Compares reorder level and qty
-            cout << "Low stock found at: \n";
+            cout << endl << "Low stock found at: \n";
             products[i].displayProduct();   //displays
             okStock = false;   
             lowDataCount++;      
@@ -256,6 +256,12 @@ int main(){
         cout << "6. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
+        
+        if (cin.fail()) { // Check for invalid input
+            cin.clear(); // Clear the error flag
+             cin.ignore(10000, '\n');// Ignore the invalid input
+            choice = 0; // Set choice to an invalid value
+        }
 
         switch (choice) {
             case 1: addProduct(products,productcount); 
