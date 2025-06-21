@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
+#include <algorithm>
 using namespace std;
 
 
@@ -221,7 +222,144 @@ void checkLowStock(Product products[], int count) {
     
 }
 //-----------------------------------------------------------------------------------------------------------------//
+// Leo : " First part, need the user to choice first, want to choose ID, name, or Price range "
+void searchProducts(Product products[], int productcount) {
+    int searchType;
+    cout <<" How do you want to search by ?" <<endl;
+    cout << "Search by:"<<endl;
+    cout << "1. Product ID"<<endl;
+    cout << "2. Product Name"<<endl;
+    cout << "3. Price Range"<<endl;
+    cout << " Please Enter Your choice: "<<endl;
+    cin >> searchType;
 
+    Product results[MAX_PRODUCTS]; // all the Store matched results will be stored at this variable.
+    int resultCount = 0;           // How many products matched ( amount of the produtcs that matched)
+
+
+    //first one. 
+    // ----------- Search by ID -----------
+    if (searchType == 1) {                              //( if user enter 1 )
+        string searchId;
+        cout << "Please Enter product ID to search: ";  // the user will input the product ID.
+        cin >> searchId;
+
+        for (int i = 0; i < productcount; i++) {        // a forloop to check each Id in inventory
+            if (products[i].getId() == searchId) { 
+                results[resultCount++] = products[i];
+            }
+        }
+    }
+
+    // ----------- Search by Name (case-insensitive) -----------
+    else if (searchType == 2) {                                  // if the user input 2
+        string searchName;                                       // string variable to use for 
+        cout << " Please Enter name to search (partial is okay): ";
+        cin.ignore();                                            // Clear leftover newline
+        getline(cin, searchName);
+
+        // Convert input to lowercase so it will not be case sensitive. 
+        transform(searchName.begin(), searchName.end(), searchName.begin(), ::tolower);
+
+        for (int i = 0; i < productcount; i++) {                 // 
+            string prodName = products[i].getName();
+            string lowerName = prodName;
+            transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+
+            if (lowerName.find(searchName) != string::npos) {
+                results[resultCount++] = products[i];
+            }
+        }
+    }
+
+    // ----------- Search by Price Range -----------
+    else if (searchType == 3) {
+        float minPrice, maxPrice;
+        cout << " Please Enter minimum price: ";
+        cin >> minPrice;
+        cout << " Please Enter maximum price: ";
+        cin >> maxPrice;
+
+        for (int i = 0; i < productcount; i++) {
+            float p = products[i].getPrice();
+            if (p >= minPrice && p <= maxPrice) {
+                results[resultCount++] = products[i];
+            }
+        }
+    }
+
+    // ----------- Invalid Option -----------
+    else {
+        cout << "Invalid choice.\n";
+        return;
+    }
+
+    // ----------- Show Results -----------
+    if (resultCount == 0) {
+        cout << "No matching products found.\n";
+        return;
+    }
+
+    // Print table header
+    cout << setw(10) << "ID"
+         << setw(30) << "Name"
+         << setw(15) << "Price"
+         << setw(15) << "Qty"
+         << setw(15) << "Reorder\n";
+
+    for (int i = 0; i < resultCount; i++) {
+        results[i].displayProduct();
+    }
+
+    // ----------- Ask to Sort -----------
+    char sortChoice;
+    cout << "Do you want to sort the results? (y/n): ";
+    cin >> sortChoice;
+
+    if (tolower(sortChoice) == 'y') {
+        int sortBy, order;
+        cout << "Sort by:\n";
+        cout << "1. ID\n";
+        cout << "2. Name\n";
+        cout << "3. Price\n";
+        cout << "Enter option: ";
+        cin >> sortBy;
+        cout << "Enter order (1 for Ascending, 2 for Descending): ";
+        cin >> order;
+
+        // Sort using simple nested loops (Bubble sort style)
+        for (int i = 0; i < resultCount - 1; i++) {
+            for (int j = i + 1; j < resultCount; j++) {
+                bool swap = false;
+                if (sortBy == 1) {
+                    swap = (order == 1) ? (results[i].getId() > results[j].getId()) : (results[i].getId() < results[j].getId());
+                } else if (sortBy == 2) {
+                    swap = (order == 1) ? (results[i].getName() > results[j].getName()) : (results[i].getName() < results[j].getName());
+                } else if (sortBy == 3) {
+                    swap = (order == 1) ? (results[i].getPrice() > results[j].getPrice()) : (results[i].getPrice() < results[j].getPrice());
+                }
+
+                if (swap) {
+                    Product temp = results[i];
+                    results[i] = results[j];
+                    results[j] = temp;
+                }
+            }
+        }
+
+        // ----------- Show Sorted Results -----------
+        cout << "\nSorted Results:\n";
+        cout << setw(10) << "ID"
+             << setw(30) << "Name"
+             << setw(15) << "Price"
+             << setw(15) << "Qty"
+             << setw(15) << "Reorder\n";
+
+        for (int i = 0; i < resultCount; i++) {
+            results[i].displayProduct();
+        }
+    }
+}
 
 
 int main(){
@@ -253,7 +391,8 @@ int main(){
         cout << "3. Update a product\n";
         cout << "4. Display product\n";
         cout << "5. Check Low Stock\n";
-        cout << "6. Exit\n";
+        cout << "6. Search\n";
+        cout << "7. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
         
@@ -286,11 +425,12 @@ int main(){
                      } 
                      break;
             case 5: checkLowStock(products,productcount);break;
-            case 6: cout << "Exiting...\n"; break;
+            case 6: searchProducts(products,productcount);break;
+            case 7: cout << "Exiting...\n"; break;
             
             default: cout << "Invalid choice. Try again.\n";
         }
-    } while (choice != 6);
+    } while (choice != 7);
 
     return 0;
 }
