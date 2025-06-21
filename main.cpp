@@ -31,7 +31,7 @@ public:
     }
 
     string getId() const { return id; } // Return product ID
-    string getName() const { return name; } // Returnproduct name
+    string getName() const { return name; } // Return product name
     float getPrice() const { return price; } // Return product price
     int getQty() const { return qty; } // Return product quantity
     int getReorderLevel() const { return reorderlvl; } // Return product reorder level
@@ -40,7 +40,7 @@ public:
 
 
 
-/*---------------------------------Function to load product data from a file-------------------------------*/ 
+/*---------------------------------Function to load & save product data from a file-------------------------------*/ 
 int loadData(Product products[]) {
     ifstream file("inventory.txt"); // Open the file for reading
     if (!file) { // Check if the file opened successfully
@@ -66,24 +66,178 @@ int loadData(Product products[]) {
     file.close();
     return count;
 }
-//--------------------------------------------------------------------------------------------------------//
+void saveData(Product products[],int count){
+    ofstream file("inventory.txt");
+    for(int i=0;i<count;i++){
+        file<<products[i].getId()<<" "
+        <<products[i].getName()<<" "
+        <<products[i].getPrice()<<" "
+        <<products[i].getQty()<<" "
+        <<products[i].getReorderLevel()<<endl;
+    }
+    file.close();
+}
+/*---------------------------------Function to edit product data from array class---------------------------------*/
+
+void addProduct(Product products[],int& productcount){
+string id, name;
+    float price;
+    int quantity, reorder;
+    
+    if(productcount>=MAX_PRODUCTS){
+        cout<<"Error! Maximum capacity(100)reached!\n";
+        return;
+    }
+    cout<<"Enter product ID: ";
+    cin>>id;
+
+    for(int i=0;i<productcount;i++){
+        if(products[i].getId()==id){
+            cout<<"Error! Product Id already exist!\n";
+            return;
+        }
+    }
+
+    cout<< "Enter product name: ";
+    cin.ignore();
+    getline(cin, name);
+    if (name.empty()) {
+        cout << "Product name cannot be empty.\n";
+        return;
+    }
+    cout<<"Enter the prices: ";
+    cin >>price;
+    if (price<0) {
+        cout << "Invalid! Please enter it again.\n";
+        return;
+    }
+    cout<<"Enter the quantity: ";
+    cin>> quantity;
+    if (quantity<0) {
+        cout << "Invalid! Please enter it again.\n";
+        return;
+    }
+    cout<< "Enter the re-order level: ";
+    cin>>reorder;
+    if (reorder<0) {
+        cout << "Invalid! Please enter it again.\n";
+        return;
+    }
+    products[productcount].setProduct(id, name, price, quantity, reorder);
+    productcount++;
+    saveData(products,productcount);
+    cout << "Product added successfully.\n";
+}
+
+void updateProduct(Product products[],int productcount) {
+    string id;
+    cout << "Enter product ID to update: ";
+    cin >> id;
+
+     for (int i=0;i<productcount;i++) {
+        if (products[i].getId() == id) { //HERE NEED TO FIND EVERY PRODUCT CONTAINING THE INPUT,eg. cin>>13 will show P013, P213, P313 etc.
+            string name;
+            float price;
+            int quantity, reorder;
+
+            cout<<"Enter new name: ";
+            cin.ignore();
+            getline(cin, name);
+            if (name.empty()) {
+                cout << "Product name cannot be empty.\n";
+                return;
+            }
+
+            cout<<"Enter the new prices: ";
+            cin>>price;
+            if (price < 0) {
+                cout << "Invalid! Please enter it again.\n";
+                return;
+            }
+
+            cout<<"Enter the new quantity: ";
+            cin>>quantity;
+            if (quantity < 0) {
+                cout << "Invalid! Please enter it again.\n";
+                return;
+            }
+
+            cout<<"Enter the new reorder level: ";
+            cin>>reorder;
+            if (reorder < 0) {
+                cout << "Invalid! Please enter it again.\n";
+                return;
+            }
+
+            products[i].setProduct(id,name, price, quantity, reorder);
+            saveData(products,productcount);
+            cout<<"Product updated successfully.\n";
+            return;
+        }
+    }
+    cout <<"Product ID not found.\n";
+}
+
+void deleteProduct(Product products[],int& productcount) {
+    string id;
+    cout<<"Enter Product ID to delete: ";
+    cin>>id;
+
+    bool answer=false;
+    for(int i=0;i<productcount;i++){
+        if (products[i].getId()==id){
+            for(int j=i;j<productcount-1;j++){
+                products[j]=products[j+1];
+            }
+            productcount--;
+            saveData(products,productcount);
+            cout<<"Product have been deleted!\n";
+            answer=true;
+            break;
+        }
+    }
+    if(!answer){
+        cout<<"Not found!\n";
+    }
+}
+/*---------------------------------Function to check-stock product data from array class---------------------------*/
+void checkLowStock(Product products[], int count) {
+    bool okStock = true; //Check if any products are low
+    int lowDataCount = 0; // Track low products
+    for (int i = 0; i < count; i++) {
+        if (products[i].getQty() <= products[i].getReorderLevel()) { //Compares reorder level and qty
+            cout << endl << "Low stock found at: \n";
+            products[i].displayProduct();   //displays
+            okStock = false;   
+            lowDataCount++;      
+        }
+    }
+    if (okStock) //Notifies how many products require restock
+    {
+        cout << "All products are not low stocked!\n";
+    } else {
+        cout << lowDataCount << " products require urgent restock!\n";
+    }
+    
+}
+//-----------------------------------------------------------------------------------------------------------------//
 
 
 
 int main(){
     Product products[MAX_PRODUCTS];
-    int total = loadData(products);// Load product data from file
+    int productcount = loadData(products);// Load product data from file
 
     // Display the loaded products
-    if (total > 0) {
-        cout << "Loaded " << total << " products:\n";
+    if (productcount > 0) {
+        cout << "Loaded " << productcount << " products:\n";
         cout << setw(10) << "ID" 
             << setw(30) << "Name" 
             << setw(15) << "Price" 
             << setw(15) << "Qty" 
             << setw(15) << "Reorder\n"; 
 
-        for (int i = 0; i < total; i++) {
+        for (int i = 0; i < productcount; i++) {
             products[i].displayProduct();
         }
         
@@ -91,5 +245,54 @@ int main(){
         cout << "No products loaded.\n";
     }
 
+    int choice;
+    do {
+        cout << "\n===== Product Management Menu =====\n";
+        cout << "1. Add a product\n";
+        cout << "2. Delete product(s)\n";
+        cout << "3. Update a product\n";
+        cout << "4. Display product\n";
+        cout << "5. Check Low Stock\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        
+        if (cin.fail()) { // Check for invalid input
+            cin.clear(); // Clear the error flag
+             cin.ignore(10000, '\n');// Ignore the invalid input
+            choice = 0; // Set choice to an invalid value
+        }
+
+        switch (choice) {
+            case 1: addProduct(products,productcount); 
+                    break;
+            case 2: deleteProduct(products,productcount); 
+                    break;
+            case 3: updateProduct(products,productcount); 
+                    break;
+            case 4:  if (productcount > 0) {
+                            cout << "Loaded " << productcount << " products:\n";
+                            cout << setw(10) << "ID" 
+                                 << setw(30) << "Name" 
+                                 << setw(15) << "Price" 
+                                 << setw(15) << "Qty" 
+                                 << setw(15) << "Reorder\n"; 
+
+                            for (int i = 0; i < productcount; i++) {
+                                      products[i].displayProduct();
+                                }   
+                     }else{
+                            cout << "No products loaded.\n";
+                     } 
+                     break;
+            case 5: checkLowStock(products,productcount);break;
+            case 6: cout << "Exiting...\n"; break;
+            
+            default: cout << "Invalid choice. Try again.\n";
+        }
+    } while (choice != 6);
+
     return 0;
 }
+
+
