@@ -22,6 +22,7 @@ public:
         name = prod_name; // set product name
     }
     void displayProduct() const {
+        
         cout << setw(10) << id  // display product ID, set width to 10 for ID
             << setw(30) << name // display product name, set width to 30 for name
             << setw(15) << fixed  << setprecision(2) << price // display product price, set width to 15 for price
@@ -223,8 +224,28 @@ void checkLowStock(Product products[], int count) {
 //-----------------------------------------------------------------------------------------------------------------//
 
 
+/*---------------------------------Function to authenticate the user---------------------------*/
+bool authenticateUser(){
+
+    string inputpassword,password="user123!"; //setting the correct password to user123!
+    for( int attempt=1;attempt<=3;attempt++)//repeating the program 3 times until user inputs correct password
+    {cout<<"\nEnter the password to access:";
+    cin>>inputpassword;
+    if(inputpassword==password)
+    {cout<<"Login successfull!\n";
+    return true;}//returns to the main program if password is correct
+    else
+    cout<<"\nIncorrect password, attempt "<<attempt<<" of 3.";
+    }
+     cout<<"\nLogin unsuccessful!\n";//displayed if password is incorrect
+     return false;
+}
 
 int main(){
+    if(!authenticateUser())//calling function to restrct access to authorised users
+   {
+    return 1;
+   }
     Product products[MAX_PRODUCTS];
     int productcount = loadData(products);// Load product data from file
 

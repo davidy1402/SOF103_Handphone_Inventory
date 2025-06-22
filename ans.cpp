@@ -231,8 +231,7 @@ int main() {
         cout << "Authentication failed! Access denied.\n";
         return 1;
     }
-
-    int choice;
+ int choice;
     do {
         cout << "\nSTOCK INVENTORY MANAGEMENT SYSTEM\n"
              << "1. List all products\n"
