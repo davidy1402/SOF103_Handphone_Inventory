@@ -261,42 +261,42 @@ void searchProducts(Product products[], int productcount) {
         // Convert input to lowercase so it will not be case sensitive. 
         transform(searchName.begin(), searchName.end(), searchName.begin(), ::tolower);
 
-        for (int i = 0; i < productcount; i++) {                 // 
-            string prodName = products[i].getName();
-            string lowerName = prodName;
+        for (int i = 0; i < productcount; i++) {                 // loop through all products. 
+            string prodName = products[i].getName();             // get the name of the current product via getter function. 
+            string lowerName = prodName;                         // set the lowercase version of prodName, and it will be stored to lowercase.
             transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
 
-            if (lowerName.find(searchName) != string::npos) {
-                results[resultCount++] = products[i];
-            }
+            if (lowerName.find(searchName) != string::npos) {    // checks if the lowercase  searchName es=xist anywhere inside the lowercase product name
+                results[resultCount++] = products[i];            // find ( ) will return the index if found
+            }                                                    //  string :: npos  ( meaning not found )
         }
     }
 
     // ----------- Search by Price Range -----------
-    else if (searchType == 3) {
-        float minPrice, maxPrice;
-        cout << " Please Enter minimum price: ";
+    else if (searchType == 3) {                           // id the user enter 3
+        float minPrice, maxPrice;                         // variable to store the maximum price range and minimu price range
+        cout << " Please Enter minimum price: ";          // the maximum price user want
         cin >> minPrice;
-        cout << " Please Enter maximum price: ";
+        cout << " Please Enter maximum price: ";          // the minimum price user want
         cin >> maxPrice;
 
-        for (int i = 0; i < productcount; i++) {
-            float p = products[i].getPrice();
-            if (p >= minPrice && p <= maxPrice) {
-                results[resultCount++] = products[i];
+        for (int i = 0; i < productcount; i++) {          //to loop through products
+            float p = products[i].getPrice();             //get the price from using getPrice()
+            if (p >= minPrice && p <= maxPrice) {         //if the product's price is in the range of the minPrice and maxPrice 
+                results[resultCount++] = products[i];     // the for loop will input the product in array result[] to find the match result                                                      }
             }
         }
     }
 
     // ----------- Invalid Option -----------
     else {
-        cout << "Invalid choice.\n";
+        cout << "Invalid choice.\n";                 // will print out invalid choice if the requirement do not match 
         return;
     }
 
     // ----------- Show Results -----------
     if (resultCount == 0) {
-        cout << "No matching products found.\n";
+        cout << "No matching products found.\n";     
         return;
     }
 
@@ -327,22 +327,23 @@ void searchProducts(Product products[], int productcount) {
         cout << "Enter order (1 for Ascending, 2 for Descending): ";
         cin >> order;
 
-        // Sort using simple nested loops (Bubble sort style)
-        for (int i = 0; i < resultCount - 1; i++) {
-            for (int j = i + 1; j < resultCount; j++) {
+        // Sort using simple nested loops 
+        for (int i = 0; i < resultCount - 1; i++) {                
+            for (int j = i + 1; j < resultCount; j++) {       // for loop to sort one by one manually
                 bool swap = false;
-                if (sortBy == 1) {
-                    swap = (order == 1) ? (results[i].getId() > results[j].getId()) : (results[i].getId() < results[j].getId());
-                } else if (sortBy == 2) {
-                    swap = (order == 1) ? (results[i].getName() > results[j].getName()) : (results[i].getName() < results[j].getName());
-                } else if (sortBy == 3) {
-                    swap = (order == 1) ? (results[i].getPrice() > results[j].getPrice()) : (results[i].getPrice() < results[j].getPrice());
+                // Check which attribute to sort by
+                if (sortBy == 1) {                            // sort y id
+                    swap = (order == 1) ? (results[i].getId() > results[j].getId()) : (results[i].getId() < results[j].getId());             // Ascending: if left > right, swap; Descending: if left < right, swap;
+                } else if (sortBy == 2) {                     // sort by name
+                    swap = (order == 1) ? (results[i].getName() > results[j].getName()) : (results[i].getName() < results[j].getName());     // Ascending: Alphabetical order; Descending: Z to A;
+                } else if (sortBy == 3) {                     // sort by price
+                    swap = (order == 1) ? (results[i].getPrice() > results[j].getPrice()) : (results[i].getPrice() < results[j].getPrice()); // Ascending: Lowest price to Highest;  Descending: Highest Price to the Lowest.
                 }
 
                 if (swap) {
-                    Product temp = results[i];
-                    results[i] = results[j];
-                    results[j] = temp;
+                    Product temp = results[i]; // Temporarily hold one product
+                    results[i] = results[j];   // Assign second product to the first production 
+                    results[j] = temp;         // Put the temp product into the second 
                 }
             }
         }
