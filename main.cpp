@@ -225,12 +225,12 @@ void checkLowStock(Product products[], int count) {
 // Leo : " First part, need the user to choice first, want to choose ID, name, or Price range "
 void searchProducts(Product products[], int productcount) {
     int searchType;
-    cout <<" How do you want to search by ?" <<endl;
-    cout << "Search by:"<<endl;
-    cout << "1. Product ID"<<endl;
-    cout << "2. Product Name"<<endl;
-    cout << "3. Price Range"<<endl;
-    cout << " Please Enter Your choice: "<<endl;
+    cout << "How do you want to search by?" << endl;
+    cout << "Search by:"<< endl;
+    cout << "1. Product ID"<< endl;
+    cout << "2. Product Name"<< endl;
+    cout << "3. Price Range"<< endl;
+    cout << "Please Enter Your choice: "<< endl;
     cin >> searchType;
 
     Product results[MAX_PRODUCTS]; // all the Store matched results will be stored at this variable.
@@ -254,7 +254,7 @@ void searchProducts(Product products[], int productcount) {
     // ----------- Search by Name (case-insensitive) -----------
     else if (searchType == 2) {                                  // if the user input 2
         string searchName;                                       // string variable to use for 
-        cout << " Please Enter name to search (partial is okay): ";
+        cout << "Enter part or full product name to search: ";
         cin.ignore();                                            // Clear leftover newline
         getline(cin, searchName);
 
@@ -396,6 +396,7 @@ int main(){
         cout << "7. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
+        cout << endl;
         
         if (cin.fail()) { // Check for invalid input
             cin.clear(); // Clear the error flag
