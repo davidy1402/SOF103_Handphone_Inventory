@@ -4,10 +4,12 @@
 #include <iomanip>
 using namespace std;
 
-
+/*---------------------------------------------- Constant definitions---------------------------------------------*/
 const int MAX_PRODUCTS = 100; // Maximum number of products allowed in the inventory
+const int MAX_ACCOUNTS = 10; // Maximum number of products allowed in system
+//-----------------------------------------------------------------------------------------------------------------//
 
-/*----------------------------------------------Product class definition-----------------------------------*/
+/*---------------------------------------------- Class definitions------------------------------------------------*/
 class Product{
 private:
     string id, name;
@@ -36,15 +38,37 @@ public:
     int getQty() const { return qty; } // Return product quantity
     int getReorderLevel() const { return reorderlvl; } // Return product reorder level
 };
-//--------------------------------------------------------------------------------------------------------//
+class Account{
+    private: 
+    string email, pass, id; 
+    public:
+    void setAcc(string mail, string password, string acc_id){
+        email = mail; // Set Mail
+        pass = password; // Set Pass
+        id = acc_id; // Set ID
+    }
 
+    void displayAcc()const {
+        cout << setw(10) << id      // display account ID
+         << setw(30) << email       // display email
+         << setw(20) << pass        // display password
+         << endl;
+    }
 
+//Getters ~each individually allows main access to private
+    string getId() const{return id;}
+    string getEmail() const{return email;}
+    string getPass() const{return pass;}
+
+};
+//-----------------------------------------------------------------------------------------------------------------//
 
 /*---------------------------------Function to load & save product data from a file-------------------------------*/ 
 int loadData(Product products[]) {
+
     ifstream file("inventory.txt"); // Open the file for reading
     if (!file) { // Check if the file opened successfully
-        cout << "Error: Unable to open file.\n"; // Display error message if file cannot be opened
+        cout << "Error: Unable to open product file.\n"; // Display error message if file cannot be opened
         return 0;
     }
 
@@ -57,28 +81,59 @@ int loadData(Product products[]) {
         products[count].setProduct(id, name, price, qty, reorder); // Set product details
         count++; // Increment the count of products loaded
     }
-
     if (count == MAX_PRODUCTS) {// Check if maximum capacity is reached
         // If maximum capacity is reached, display a warning message
-        cout << "Warning: Maximum capacity (100) reached. Some data may be ignored.\n";
+        cout << "Warning: Maximum product capacity (100) reached. Some data may be ignored.\n";
     }
-
     file.close();
     return count;
 }
 void saveData(Product products[],int count){
-    ofstream file("inventory.txt");
-    for(int i=0;i<count;i++){
+    ofstream file("inventory.txt"); //Opens inventory to write
+    for(int i=0;i<count;i++){   //Writes into new file
         file<<products[i].getId()<<" "
         <<products[i].getName()<<" "
         <<products[i].getPrice()<<" "
         <<products[i].getQty()<<" "
         <<products[i].getReorderLevel()<<endl;
     }
-    file.close();
+    file.close(); //Closed file to save memory
 }
-/*---------------------------------Function to edit product data from array class---------------------------------*/
+int loadAcc(Account accounts[]){
 
+    ifstream file1("acc_management.txt"); // Open the file for reading
+    if (!file1) { // Check if the file opened successfully
+        cout << "Error: Unable to open account file.\n"; // Display error message if file cannot be opened
+        return 0;}
+
+    string acc_id, email, pass;
+    int count = 0; // Initialize count of accounts loaded
+    while ((file1 >> acc_id >> email >> pass) && count < MAX_PRODUCTS) {
+        accounts[count].setAcc(acc_id,email,pass); // Set account details
+        count++; // Increment the count of accounts loaded
+    }
+
+    if (count == MAX_ACCOUNTS) {// Check if maximum capacity is reached
+        // If maximum capacity is reached, display a warning message
+        cout << "Warning: Maximum account capacity (100) reached. Some data may be ignored.\n";
+    }
+
+    file1.close();
+    return count;
+}
+void saveAcc(Account accounts[],int count){
+    ofstream file("acc_management.txt"); //Opens acc_management for writting
+    for(int i=0;i<count;i++){            //Loops and writes into file
+        file<<accounts[i].getId()<<" "
+        <<accounts[i].getEmail()<<" "
+        <<accounts[i].getPass()<<" "
+        <<endl;
+    }
+    file.close();                         //Closes file to save memory
+}
+//-----------------------------------------------------------------------------------------------------------------//
+
+/*---------------------------------Function to edit product data from array class---------------------------------*/
 void addProduct(Product products[],int& productcount){
 string id, name;
     float price;
@@ -222,10 +277,10 @@ void checkLowStock(Product products[], int count) {
 }
 //-----------------------------------------------------------------------------------------------------------------//
 
-
-
 int main(){
-    Product products[MAX_PRODUCTS];
+    Product products[MAX_PRODUCTS]; //Set Product class
+    Account accounts[MAX_ACCOUNTS]; //Set Account class
+    int accountcount = loadAcc(accounts); // Load accounts data from file
     int productcount = loadData(products);// Load product data from file
 
     // Display the loaded products
