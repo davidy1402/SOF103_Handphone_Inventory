@@ -47,18 +47,18 @@ class Account{
     private: 
     string email, pass, id; 
     public:
-    void setAcc(string mail, string password, string acc_id){
+    void setAcc(string acc_id, string mail, string password){
         email = mail; // Set Mail
         pass = password; // Set Pass
         id = acc_id; // Set ID
     }
 
-    void displayAcc()const {
-        cout << setw(10) << id      // display account ID
-         << setw(30) << email       // display email
-         << setw(20) << pass        // display password
+   void displayAcc() const {
+    cout << setw(10) << id //display ID
+         << setw(30) << email //display EMAIL
+         << setw(20) << pass //display PASS
          << endl;
-    }
+}
 
 //Getters ~each individually allows main access to private
     string getId() const{return id;}
@@ -69,22 +69,22 @@ class Account{
 //-----------------------------------------------------------------------------------------------------------------//
 
 /*---------------------------------Function to authenticate users----------------------------------------------*/
-bool userAuthentication(const Account accounts[], int accountcount, string& loggedInEmail)
-{string email, password;
-        cin.ignore();
+bool userAuthentication(const Account accounts[], int accountcount, string& loggedInEmail){
+    string email, password;
         cout << "Enter email: ";
-        getline(cin, email);
+        cin >> email;
         cout << "Enter password: ";
-        getline(cin, password);
+        cin >> password;
 
         for (int i = 0; i < accountcount; i++) {
             if (accounts[i].getEmail() == email && accounts[i].getPass() == password) {
                 loggedInEmail = email; // Store the logged-in user's email
                 return true;
-            }
-        }
-        cout << "Could not login. Try again.\n";
-        return false;
+            } 
+                
+        } 
+                cout << "Could not login. Try again.\n";
+                return false;
     }
 //-----------------------------------------------------------------------------------------------------------------//
 
@@ -429,9 +429,12 @@ int main(){
     int accountcount = loadAcc(accounts); // Load accounts data from file
     int productcount = loadData(products);// Load product data from file
 
+    bool allowAccess = false;
     string loggedInEmail; // Store who is logged in
-    while (!userAuthentication(accounts, accountcount, loggedInEmail)) {
-    }
+    
+    while (!allowAccess){ //Check for userAccess
+        allowAccess= userAuthentication(accounts, accountcount, loggedInEmail);}
+
     // Display the loaded products
     if (productcount > 0) {
         cout << "Loaded " << productcount << " products:\n";
