@@ -7,11 +7,11 @@ using namespace std;
 /*---------------------------------------------- Constant definitions---------------------------------------------*/
 const int MAX_PRODUCTS = 100; // Maximum number of products allowed in the inventory
 const int MAX_ACCOUNTS = 10; // Maximum number of accounts allowed in system
-const string ADMIN_EMAIL = "admin@gmail.com";
+const string ADMIN_EMAIL = "admin@gmail.com";//setting up the admin email
 //-----------------------------------------------------------------------------------------------------------------//
 
 /*---------------------------------------------- String variable definition---------------------------------------*/
-string loggedInEmail = "";
+string loggedInEmail = "";//declaring variable to identify the current email with which the user is logged in 
 /*----------------------------------------------------------------------------------------------------------------*/
 
 /*---------------------------------------------- Class definitions------------------------------------------------*/
@@ -74,16 +74,17 @@ bool userAuthentication(const Account accounts[], int accountcount, string& logg
         cout << "Enter email: ";
         cin >> email;
         cout << "Enter password: ";
-        cin >> password;
+        cin >> password;// asks the users to key-in their email and password to log in
 
         for (int i = 0; i < accountcount; i++) {
             if (accounts[i].getEmail() == email && accounts[i].getPass() == password) {
                 loggedInEmail = email; // Store the logged-in user's email
+                cout << "Login successful.\n";//displayed if user enters the correct email and password
                 return true;
             } 
                 
         } 
-                cout << "Could not login. Try again.\n";
+                cout << "Could not login. Try again.\n";//if log in is unsuccessful
                 return false;
     }
 //-----------------------------------------------------------------------------------------------------------------//
@@ -290,24 +291,24 @@ void deleteProduct(Product products[],int& productcount) {
 /*-----------------------------------------Function to register new account--------------------------------------------*/
 void registerAccount(Account accounts[],int& accountcount){
 string id, email,pass, confirmPass;
-    if(accountcount>=MAX_ACCOUNTS){
+    if(accountcount>=MAX_ACCOUNTS){//to check whether maximum capacity of account has been reached
         cout<<"Error! Maximum capacity (10) reached!\n";
         return;
     }
     cout<<"Enter email: ";
     cin.ignore();
     getline(cin, email);
-    for(int i = 0; i < accountcount; i++) {
+    for(int i = 0; i < accountcount; i++) {//to check whether the account to be registered is overlapping with any other registered email 
         if(accounts[i].getEmail() == email) {
             cout << "Error! Email already exists!\n";
             return;
         }
     }
-    if (email.empty()) {
+    if (email.empty()) {//if the user does not input any email
         cout << "Email cannot be empty.\n";
         return;
     }
-    cout<<"Enter the password: ";
+    cout<<"Enter the password: ";//for setting up the password
     getline(cin, pass);
     if (pass.empty()) {
         cout << "Password cannot be empty.\n";
@@ -315,18 +316,18 @@ string id, email,pass, confirmPass;
     }
     
     do {
-        cout << "Confirm the password: ";
+        cout << "Confirm the password: ";//confirming the password
         getline(cin, confirmPass);
         if(confirmPass != pass) {
             cout << "Password does not match. Enter again.\n";
         }
-    } while(confirmPass != pass);
+    } while(confirmPass != pass);//the user can infinitely try setting up password until the password matches with the confirm password
 
 
 
     id = "A" + to_string(accountcount + 1);//generate id
     accounts[accountcount].setAcc(id, email, pass);
-    accountcount++;
+    accountcount++;//add the number of accounts in the list
     saveAcc(accounts,accountcount);
     cout << "Account registered successfully.\n";
 }
@@ -336,28 +337,28 @@ void deleteAcc(Account accounts[], int& accountcount,const string& loggedInEmail
     string email, pass;
     cout << "Enter email of account to delete: ";
     cin.ignore();
-    getline(cin, email);
+    getline(cin, email);//getting the account the user wants to delete
     
     if(email == ADMIN_EMAIL) {
         cout << "Cannot delete admin account!\n";
         return;
-    }
+    }//admin cannot delete his account so the code ensures it is not an admin's account which the user wants to delete
     
     if(email == loggedInEmail) {
         cout << "You are currently logged in with this email. It cannot be deleted!\n";
         return;
-    }
+    }//user also cannot delete the account if he is logged in with that account
     
-    cout << "Enter password to verify: ";
+    cout << "Enter password to verify: ";//verification with password before deleting account 
     getline(cin, pass);
     
     bool answer = false;
     for(int i = 0; i < accountcount; i++) {
-        if(accounts[i].getEmail() == email && accounts[i].getPass() == pass) {
+        if(accounts[i].getEmail() == email && accounts[i].getPass() == pass) {//verifying the account
             for(int j = i; j < accountcount - 1; j++) {
                 accounts[j] = accounts[j + 1];
             }
-            accountcount--;
+            accountcount--;//deleting account from the list
             saveAcc(accounts, accountcount);
             cout << "Account has been deleted!\n";
             answer = true;
@@ -366,7 +367,7 @@ void deleteAcc(Account accounts[], int& accountcount,const string& loggedInEmail
     }
     
     if(!answer) {
-        cout << "Account does not exist or password incorrect!\n";
+        cout << "Account does not exist or password incorrect!\n";//diplayed if the entered email is not found or the password is incorrect
     }
 }
 
@@ -374,7 +375,7 @@ void deleteAcc(Account accounts[], int& accountcount,const string& loggedInEmail
 /*-----------------------------------------Function to manage accounts--------------------------------------------*/
 void accManagement(Account accounts[], int& accountcount, const string& loggedInEmail) {
     int choice;
-    do {
+    do {//displays the menu infinitely until the user chooses 3(Back to main menu)
         cout << "\n Account Management:\n";
         cout << "1. Register\n";
         cout << "2. Delete Account\n";
@@ -387,15 +388,15 @@ void accManagement(Account accounts[], int& accountcount, const string& loggedIn
             choice = 0; // Set choice to an invalid value
         }
         switch (choice) {
-            case 1:registerAccount(accounts, accountcount);
+            case 1:registerAccount(accounts, accountcount);//calls function to register new account
                    break;
             case 2:deleteAcc(accounts, accountcount, loggedInEmail); // Pass loggedInEmail
                    break;
             case 3:cout<<"Exited from Account Management\n";
                    break; 
-            default: cout<<"Invalid choice. Try again.\n";
+            default: cout<<"Invalid choice. Try again.\n";//if the user enters any number other than 1-3
         }
-    } while (choice!=3);
+    } while (choice!=3);//the loop keeps on repeating until 3 is entered
 }
 /*-----------------------------------------------------------------------------------------------------------------*/
 
@@ -433,7 +434,7 @@ int main(){
     string loggedInEmail; // Store who is logged in
     
     while (!allowAccess){ //Check for userAccess
-        allowAccess= userAuthentication(accounts, accountcount, loggedInEmail);}
+        allowAccess= userAuthentication(accounts, accountcount, loggedInEmail);}//calls the function to authenticate user
 
     // Display the loaded products
     if (productcount > 0) {
