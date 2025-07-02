@@ -245,9 +245,9 @@ void searchProducts(Product products[], int productcount) {
         cin >> searchId;
 
         for (int i = 0; i < productcount; i++) {        // a forloop to check each Id in inventory
-            if (products[i].getId() == searchId) { 
-                results[resultCount++] = products[i];
-            }
+            if (products[i].getId().find(searchId) != string::npos) {
+                    results[resultCount++] = products[i];
+}
         }
     }
 
@@ -358,7 +358,10 @@ void searchProducts(Product products[], int productcount) {
 
         for (int i = 0; i < resultCount; i++) {
             results[i].displayProduct();
-        }
+        }        
+        cout << "\nSuccessfully sorted the results.\n";
+        cout << "Sorted by: "<< (sortBy == 1 ? "ID" : sortBy == 2 ? "Name" : "Price")
+             << ", Order: " << (order == 1 ? "Ascending" : "Descending") << endl;
     }
 }
 
