@@ -212,6 +212,7 @@ void addProduct(Product products[],int& productcount){
     cout<<"Enter the price: ";
     cin>>price;
     if (cin.fail()||price < 0){
+        //这里可以放try catch，if 是小数点，if是character，if是负数，if是字母等。
         cout <<"Invalid input. Price must be positive.\n";
         cin.clear();//Clear all the cin and the wrong type.
         cin.ignore(1000, '\n');//Ignore next 1000 word until meet \n.
@@ -221,6 +222,7 @@ void addProduct(Product products[],int& productcount){
     cout << "Enter the quantity: ";
     cin>>quantity;
     if (cin.fail()||quantity<0){
+        //这里可以放try catch，if 是小数点，if是character，if是负数，if是字母等。
         cout << "Invalid input. Quantity must be non-negative.\n";
         cin.clear();
         cin.ignore(1000, '\n');
@@ -230,6 +232,7 @@ void addProduct(Product products[],int& productcount){
     cout<<"Enter the re-order level: ";
     cin>>reorder;
     if (cin.fail()||reorder<0){
+        //这里可以放try catch，if 是小数点，if是character，if是负数，if是字母等。
         cout << "Invalid input. Reorder level must be non-negative.\n";
         cin.clear();
         cin.ignore(1000, '\n');
