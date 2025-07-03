@@ -7,8 +7,13 @@ using namespace std;
 
 /*---------------------------------------------- Constant definitions---------------------------------------------*/
 const int MAX_PRODUCTS = 100; // Maximum number of products allowed in the inventory
-const int MAX_ACCOUNTS = 10; // Maximum number of products allowed in system
+const int MAX_ACCOUNTS = 10; // Maximum number of accounts allowed in system
+const string ADMIN_EMAIL = "admin@gmail.com";//setting up the admin email
 //-----------------------------------------------------------------------------------------------------------------//
+
+/*---------------------------------------------- String variable definition---------------------------------------*/
+string loggedInEmail = "";//declaring variable to identify the current email with which the user is logged in 
+/*----------------------------------------------------------------------------------------------------------------*/
 
 /*---------------------------------------------- Class definitions------------------------------------------------*/
 class Product{
@@ -43,18 +48,18 @@ class Account{
     private: 
     string email, pass, id; 
     public:
-    void setAcc(string mail, string password, string acc_id){
+    void setAcc(string acc_id, string mail, string password){
         email = mail; // Set Mail
         pass = password; // Set Pass
         id = acc_id; // Set ID
     }
 
-    void displayAcc()const {
-        cout << setw(10) << id      // display account ID
-         << setw(30) << email       // display email
-         << setw(20) << pass        // display password
+   void displayAcc() const {
+    cout << setw(10) << id //display ID
+         << setw(30) << email //display EMAIL
+         << setw(20) << pass //display PASS
          << endl;
-    }
+}
 
 //Getters ~each individually allows main access to private
     string getId() const{return id;}
@@ -62,6 +67,27 @@ class Account{
     string getPass() const{return pass;}
 
 };
+//-----------------------------------------------------------------------------------------------------------------//
+
+/*---------------------------------Function to authenticate users----------------------------------------------*/
+bool userAuthentication(const Account accounts[], int accountcount, string& loggedInEmail){
+    string email, password;
+        cout << "Enter email: ";
+        cin >> email;
+        cout << "Enter password: ";
+        cin >> password;// asks the users to key-in their email and password to log in
+
+        for (int i = 0; i < accountcount; i++) {
+            if (accounts[i].getEmail() == email && accounts[i].getPass() == password) {
+                loggedInEmail = email; // Store the logged-in user's email
+                cout << "Login successful.\n";//displayed if user enters the correct email and password
+                return true;
+            } 
+                
+        } 
+                cout << "Could not login. Try again.\n";//if log in is unsuccessful
+                return false;
+    }
 //-----------------------------------------------------------------------------------------------------------------//
 
 /*---------------------------------Function to load & save product data from a file-------------------------------*/ 
@@ -89,6 +115,7 @@ int loadData(Product products[]) {
     file.close();
     return count;
 }
+
 void saveData(Product products[],int count){
     ofstream file("inventory.txt"); //Opens inventory to write
     for(int i=0;i<count;i++){   //Writes into new file
@@ -100,6 +127,11 @@ void saveData(Product products[],int count){
     }
     file.close(); //Closed file to save memory
 }
+
+//-----------------------------------------------------------------------------------------------------------------//
+
+/*---------------------------------Function to load & save account data from a file-------------------------------*/ 
+
 int loadAcc(Account accounts[]){
 
     ifstream file1("acc_management.txt"); // Open the file for reading
@@ -109,14 +141,14 @@ int loadAcc(Account accounts[]){
 
     string acc_id, email, pass;
     int count = 0; // Initialize count of accounts loaded
-    while ((file1 >> acc_id >> email >> pass) && count < MAX_PRODUCTS) {
+    while ((file1 >> acc_id >> email >> pass) && count < MAX_ACCOUNTS) {
         accounts[count].setAcc(acc_id,email,pass); // Set account details
         count++; // Increment the count of accounts loaded
     }
 
     if (count == MAX_ACCOUNTS) {// Check if maximum capacity is reached
         // If maximum capacity is reached, display a warning message
-        cout << "Warning: Maximum account capacity (100) reached. Some data may be ignored.\n";
+        cout << "Warning: Maximum account capacity (10) reached. Some data may be ignored.\n";
     }
 
     file1.close();
@@ -256,6 +288,119 @@ void deleteProduct(Product products[],int& productcount) {
         cout<<"Not found!\n";
     }
 }
+//-----------------------------------------------------------------------------------------------------------------//
+/*-----------------------------------------Function to register new account--------------------------------------------*/
+void registerAccount(Account accounts[],int& accountcount){
+string id, email,pass, confirmPass;
+    if(accountcount>=MAX_ACCOUNTS){//to check whether maximum capacity of account has been reached
+        cout<<"Error! Maximum capacity (10) reached!\n";
+        return;
+    }
+    cout<<"Enter email: ";
+    cin.ignore();
+    getline(cin, email);
+    for(int i = 0; i < accountcount; i++) {//to check whether the account to be registered is overlapping with any other registered email 
+        if(accounts[i].getEmail() == email) {
+            cout << "Error! Email already exists!\n";
+            return;
+        }
+    }
+    if (email.empty()) {//if the user does not input any email
+        cout << "Email cannot be empty.\n";
+        return;
+    }
+    cout<<"Enter the password: ";//for setting up the password
+    getline(cin, pass);
+    if (pass.empty()) {
+        cout << "Password cannot be empty.\n";
+        return;
+    }
+    
+    do {
+        cout << "Confirm the password: ";//confirming the password
+        getline(cin, confirmPass);
+        if(confirmPass != pass) {
+            cout << "Password does not match. Enter again.\n";
+        }
+    } while(confirmPass != pass);//the user can infinitely try setting up password until the password matches with the confirm password
+
+
+
+    id = "A" + to_string(accountcount + 1);//generate id
+    accounts[accountcount].setAcc(id, email, pass);
+    accountcount++;//add the number of accounts in the list
+    saveAcc(accounts,accountcount);
+    cout << "Account registered successfully.\n";
+}
+/*-----------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------Function to delete account--------------------------------------------*/
+void deleteAcc(Account accounts[], int& accountcount,const string& loggedInEmail) {
+    string email, pass;
+    cout << "Enter email of account to delete: ";
+    cin.ignore();
+    getline(cin, email);//getting the account the user wants to delete
+    
+    if(email == ADMIN_EMAIL) {
+        cout << "Cannot delete admin account!\n";
+        return;
+    }//admin cannot delete his account so the code ensures it is not an admin's account which the user wants to delete
+    
+    if(email == loggedInEmail) {
+        cout << "You are currently logged in with this email. It cannot be deleted!\n";
+        return;
+    }//user also cannot delete the account if he is logged in with that account
+    
+    cout << "Enter password to verify: ";//verification with password before deleting account 
+    getline(cin, pass);
+    
+    bool answer = false;
+    for(int i = 0; i < accountcount; i++) {
+        if(accounts[i].getEmail() == email && accounts[i].getPass() == pass) {//verifying the account
+            for(int j = i; j < accountcount - 1; j++) {
+                accounts[j] = accounts[j + 1];
+            }
+            accountcount--;//deleting account from the list
+            saveAcc(accounts, accountcount);
+            cout << "Account has been deleted!\n";
+            answer = true;
+            break;
+        }
+    }
+    
+    if(!answer) {
+        cout << "Account does not exist or password incorrect!\n";//diplayed if the entered email is not found or the password is incorrect
+    }
+}
+
+/*-----------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------Function to manage accounts--------------------------------------------*/
+void accManagement(Account accounts[], int& accountcount, const string& loggedInEmail) {
+    int choice;
+    do {//displays the menu infinitely until the user chooses 3(Back to main menu)
+        cout << "\n Account Management:\n";
+        cout << "1. Register\n";
+        cout << "2. Delete Account\n";
+        cout << "3. Back to Main Menu\n";
+        cout << " Enter choice: ";
+        cin >> choice;
+         if (cin.fail()) { // Check for invalid input
+            cin.clear(); // Clear the error flag
+             cin.ignore(10000, '\n');// Ignore the invalid input
+            choice = 0; // Set choice to an invalid value
+        }
+        switch (choice) {
+            case 1:registerAccount(accounts, accountcount);//calls function to register new account
+                   break;
+            case 2:deleteAcc(accounts, accountcount, loggedInEmail); // Pass loggedInEmail
+                   break;
+            case 3:cout<<"Exited from Account Management\n";
+                   break; 
+            default: cout<<"Invalid choice. Try again.\n";//if the user enters any number other than 1-3
+        }
+    } while (choice!=3);//the loop keeps on repeating until 3 is entered
+}
+/*-----------------------------------------------------------------------------------------------------------------*/
+
 /*---------------------------------Function to check-stock product data from array class---------------------------*/
 void checkLowStock(Product products[], int count) {
     bool okStock = true; //Check if any products are low
@@ -421,11 +566,19 @@ void searchProducts(Product products[], int productcount) {
 }
 
 
+
+/*------------------------------------------Main Function----------------------------------------------------------*/
 int main(){
     Product products[MAX_PRODUCTS]; //Set Product class
     Account accounts[MAX_ACCOUNTS]; //Set Account class
     int accountcount = loadAcc(accounts); // Load accounts data from file
     int productcount = loadData(products);// Load product data from file
+
+    bool allowAccess = false;
+    string loggedInEmail; // Store who is logged in
+    
+    while (!allowAccess){ //Check for userAccess
+        allowAccess= userAuthentication(accounts, accountcount, loggedInEmail);}//calls the function to authenticate user
 
     // Display the loaded products
     if (productcount > 0) {
@@ -452,8 +605,10 @@ int main(){
         cout << "3. Update a product\n";
         cout << "4. Display product\n";
         cout << "5. Check Low Stock\n";
-        cout << "6. Search\n";
-        cout << "7. Exit\n";
+        cout << "6. Account Management\n";
+        cout << "7. Search\n";
+
+        cout << "8. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
         cout << endl;
@@ -487,8 +642,12 @@ int main(){
                      } 
                      break;
             case 5: checkLowStock(products,productcount);break;
-            case 6: searchProducts(products,productcount);break;
-            case 7: cout << "Exiting...\n"; break;
+
+            case 6: accManagement(accounts, accountcount, loggedInEmail); break;
+
+            case 7: searchProducts(products,productcount);break;
+
+            case 8: cout << "Exiting...\n"; break;
             
             default: cout << "Invalid choice. Try again.\n";
         }
@@ -496,5 +655,4 @@ int main(){
 
     return 0;
 }
-
-
+/*-----------------------------------------------------------------------------------------------------------------*/
