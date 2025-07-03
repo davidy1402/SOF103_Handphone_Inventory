@@ -776,36 +776,18 @@ int main(){
     while (!allowAccess){ //Check for userAccess
         allowAccess= userAuthentication(accounts, accountcount, loggedInEmail);}//calls the function to authenticate user
 
-    // Display the loaded products
-    if (productcount > 0) {
-        cout << "Loaded " << productcount << " products:\n";
-        cout << setw(10) << "ID" 
-            << setw(30) << "Name" 
-            << setw(15) << "Price" 
-            << setw(15) << "Qty" 
-            << setw(15) << "Reorder\n"; 
-
-        for (int i = 0; i < productcount; i++) {
-            products[i].displayProduct();
-        }
-        
-    }else{
-        cout << "No products loaded.\n";
-    }
-
     int choice;
     do {
-        cout << "\n===== Product Management Menu =====\n";
-        cout << "1. Add a product\n";
-        cout << "2. Delete product(s)\n";
-        cout << "3. Update a product\n";
-        cout << "4. Display product\n";
-        cout << "5. Check Low Stock\n";
-        cout << "6. Account Management\n";
-        cout << "7. Search\n";
-
+        cout << "\n===== Handphone Inventory Management Menu =====\n";
+        cout << "1. Display All Products\n";
+        cout << "2. Search Product(s)\n";
+        cout << "3. Add a Product\n";
+        cout << "4. Update a Product\n";
+        cout << "5. Delete Product(s)\n"; 
+        cout << "6. Check Low Stock\n";
+        cout << "7. Account Management\n";
         cout << "8. Exit\n";
-        cout << "Enter your choice: ";
+        cout << "Enter your choice (1-8): ";
         cin >> choice;
         cout << endl;
         
@@ -816,38 +798,41 @@ int main(){
         }
 
         switch (choice) {
-            case 1: addProduct(products,productcount); 
-                    break;
-            case 2: deleteProduct(products,productcount); 
-                    break;
-            case 3: updateProduct(products,productcount); 
-                    break;
-            case 4:  if (productcount > 0) {
-                            cout << "Loaded " << productcount << " products:\n";
-                            cout << setw(10) << "ID" 
-                                 << setw(30) << "Name" 
-                                 << setw(15) << "Price" 
-                                 << setw(15) << "Qty" 
-                                 << setw(15) << "Reorder\n"; 
+            case 1: // Display all products
+                if (productcount > 0) {
+                    cout << "Loaded " << productcount << " products:\n";
+                    cout << setw(10) << "ID" 
+                        << setw(30) << "Name" 
+                        << setw(15) << "Price" 
+                        << setw(15) << "Qty" 
+                        << setw(15) << "Reorder\n"; 
 
-                            for (int i = 0; i < productcount; i++) {
-                                      products[i].displayProduct();
-                                }   
-                     }else{
-                            cout << "No products loaded.\n";
-                     } 
-                     break;
-            case 5: checkLowStock(products,productcount);break;
+                    for (int i = 0; i < productcount; i++) {
+                        products[i].displayProduct();
+                    }
+                    
+                }else{
+                    cout << "No products loaded.\n";
+                }
+           
 
-            case 6: accManagement(accounts, accountcount, loggedInEmail); break;
+            case 2: searchProducts(products,productcount);break;
 
-            case 7: searchProducts(products,productcount);break;
+            case 3: addProduct(products,productcount); break;
+
+            case 4: updateProduct(products,productcount); break;
+
+            case 5: deleteProduct(products,productcount); break;
+            
+            case 6: checkLowStock(products,productcount);break;
+
+            case 7: accManagement(accounts, accountcount, loggedInEmail); break;
 
             case 8: cout << "Exiting...\n"; break;
             
             default: cout << "Invalid choice. Try again.\n";
         }
-    } while (choice != 7);
+    } while (choice != 8);
 
     return 0;
 }
