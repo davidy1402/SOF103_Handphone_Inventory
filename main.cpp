@@ -471,9 +471,20 @@ void deleteProduct(Product products[],int& productcount) {
             cin.ignore(1000, '\n');
             return;
         }
-        selectedIndex=matches[choice-1];
+        cout << "You have selected:\n";
+        products[matches[choice-1]].displayProduct();
+        cout << "Are you sure you want to delete this product? (y/n): ";
+        char confirm;
+        cin >> confirm;
+       
+        if (confirm != 'y') {
+            cout << "Product deletion cancelled.\n";
+            return;
+        }
+
+        selectedIndex = matches[choice-1]; // Get the index of the selected product
     } else {
-        selectedIndex=matches[0];
+        selectedIndex = matches[0];
     }
 
     for(int j=selectedIndex;j<productcount-1;j++) {//Start from selectedIndex, and use productcount-1 to make sure it will not over the area.
