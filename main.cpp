@@ -6,17 +6,19 @@
 #include <cctype>
 using namespace std;
 
-/*---------------------------------------------- Constant definitions---------------------------------------------*/
+/*------------------------------------------ Constant definitions-------------------------------------------*/
 const int MAX_PRODUCTS = 100; // Maximum number of products allowed in the inventory
 const int MAX_ACCOUNTS = 10; // Maximum number of accounts allowed in system
 const string ADMIN_EMAIL = "admin@gmail.com";//setting up the admin email
-//-----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------//
 
-/*---------------------------------------------- String variable definition---------------------------------------*/
+
+/*---------------------------------------- String variable definition------------------------------------*/
 string loggedInEmail = "";//declaring variable to identify the current email with which the user is logged in 
-/*----------------------------------------------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------//
 
-/*---------------------------------------------- Class definitions------------------------------------------------*/
+
+/*------------------------------------------ Class definitions----------------------------------------------*/
 class Product{
 private:
     string id, name;
@@ -30,6 +32,7 @@ public:
         reorderlvl = prod_reorderlvl; //set product reorder level
         name = prod_name; // set product name
     }
+
     void displayProduct() const {
         cout << setw(10) << id  // display product ID, set width to 10 for ID
             << setw(30) << name // display product name, set width to 30 for name
@@ -69,9 +72,9 @@ class Account{
     string getPass() const{return pass;}
 
 };
-//-----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------//
 
-/*---------------------------------Function to authenticate users----------------------------------------------*/
+/*------------------------------------Function to authenticate users-------------------------------------*/
 bool userAuthentication(const Account accounts[], int accountcount, string& loggedInEmail){
     string email, password;
         cout << "Enter email: ";
@@ -90,35 +93,9 @@ bool userAuthentication(const Account accounts[], int accountcount, string& logg
                 cout << "Could not login. Try again.\n";//if log in is unsuccessful
                 return false;
     }
-//-----------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------//
 
-/*---------------------------------Function to load & save product data from a file-------------------------------*/ 
-int loadData(Product products[]) {
-
-    ifstream file("inventory.txt"); // Open the file for reading
-    if (!file) { // Check if the file opened successfully
-        cout << "Error: Unable to open product file.\n"; // Display error message if file cannot be opened
-        return 0;
-    }
-
-    string id, name;
-    float price;
-    int qty, reorder;
-
-    int count = 0; // Initialize count of products loaded
-    while ((file >> id >> name >> price >> qty >> reorder) && count < MAX_PRODUCTS) {
-        products[count].setProduct(id, name, price, qty, reorder); // Set product details
-        count++; // Increment the count of products loaded
-    }
-    if (count == MAX_PRODUCTS) {// Check if maximum capacity is reached
-        // If maximum capacity is reached, display a warning message
-        cout << "Warning: Maximum product capacity (100) reached. Some data may be ignored.\n";
-    }
-    file.close();
-    return count;
-}
-
-/*---------------------------------Function to load & save account data from a file-------------------------------*/ 
+/*------------------------------Function to load & save account data from a file---------------------------*/ 
 
 int loadAcc(Account accounts[]){
 
@@ -152,9 +129,37 @@ void saveAcc(Account accounts[],int count){
     }
     file.close();                         //Closes file to save memory
 }
-//-----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------//
 
-/*---------------------------------Function to edit product data from array class---------------------------------*/
+/*----------------------------Function to load & save product data from a file--------------------------*/ 
+int loadData(Product products[]) {
+
+    ifstream file("inventory.txt"); // Open the file for reading
+    if (!file) { // Check if the file opened successfully
+        cout << "Error: Unable to open product file.\n"; // Display error message if file cannot be opened
+        return 0;
+    }
+
+    string id, name;
+    float price;
+    int qty, reorder;
+
+    int count = 0; // Initialize count of products loaded
+    while ((file >> id >> name >> price >> qty >> reorder) && count < MAX_PRODUCTS) {
+        products[count].setProduct(id, name, price, qty, reorder); // Set product details
+        count++; // Increment the count of products loaded
+    }
+    if (count == MAX_PRODUCTS) {// Check if maximum capacity is reached
+        // If maximum capacity is reached, display a warning message
+        cout << "Warning: Maximum product capacity (100) reached. Some data may be ignored.\n";
+    }
+    file.close();
+    return count;
+}
+//-------------------------------------------------------------------------------------------------------//
+
+
+/*----------------------------Function to edit product data from array class--------------------------------*/
 void saveData(Product products[],int count){//This is a function that save the data input from user.
     ofstream file("inventory.txt");//Open the file to save.
     for(int i=0;i<count;i++){//Save all the data that come from users through array. 
@@ -166,8 +171,9 @@ void saveData(Product products[],int count){//This is a function that save the d
     }
     file.close();//Close the file
 }
+//----------------------------------------------------------------------------------------------------------//
 
-/*------------------------------------------------Function for identifying----------------------------------*/
+/*--------------------------------------------Function for identifying-----------------------------------*/
 bool isValidName(const string& name){
      if(name.empty())return false;//Return false if it is empty.
      for(int i=0;i<name.length();++i){//i cannot more than parameter length.
@@ -274,9 +280,9 @@ int findProductsId(Product products[], int count, const string& searchId, int ma
     }
     return matchCount;//Return how much is in searchId or findid.
 }
-/*-----------------------------------------------------------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------//
 
-/*-----------------------------------------------------Product Operation---------------------------------------------------------*/
+/*-----------------------------------------Product Operation------------------------------------------------*/
 
 void addProduct(Product products[],int& productcount){
  if (productcount>=MAX_PRODUCTS) {
@@ -495,12 +501,9 @@ void deleteProduct(Product products[],int& productcount) {
     cout<<"Product deleted successfully.\n";
 }
 
-//--------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------//
 
-
-
-//-----------------------------------------------------------------------------------------------------------------//
-/*-----------------------------------------Function to register new account--------------------------------------------*/
+/*---------------------------------Function to register new account-------------------------------------*/
 void registerAccount(Account accounts[],int& accountcount){
 string id, email,pass, confirmPass;
     if(accountcount>=MAX_ACCOUNTS){//to check whether maximum capacity of account has been reached
@@ -543,8 +546,9 @@ string id, email,pass, confirmPass;
     saveAcc(accounts,accountcount);
     cout << "Account registered successfully.\n";
 }
-/*-----------------------------------------------------------------------------------------------------------------*/
-/*-----------------------------------------Function to delete account--------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------//
+
+/*-------------------------------------Function to delete account-------------------------------------------*/
 void deleteAcc(Account accounts[], int& accountcount,const string& loggedInEmail) {
     string email, pass;
     cout << "Enter email of account to delete: ";
@@ -583,8 +587,9 @@ void deleteAcc(Account accounts[], int& accountcount,const string& loggedInEmail
     }
 }
 
-/*-----------------------------------------------------------------------------------------------------------------*/
-/*-----------------------------------------Function to manage accounts--------------------------------------------*/
+//----------------------------------------------------------------------------------------------------------//
+
+/*-------------------------------------Function to manage accounts---------------------------------------*/
 void accManagement(Account accounts[], int& accountcount, const string& loggedInEmail) {
     int choice;
     do {//displays the menu infinitely until the user chooses 3(Back to main menu)
@@ -610,9 +615,9 @@ void accManagement(Account accounts[], int& accountcount, const string& loggedIn
         }
     } while (choice!=3);//the loop keeps on repeating until 3 is entered
 }
-/*-----------------------------------------------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------//
 
-/*---------------------------------Function to check-stock product data from array class---------------------------*/
+/*-----------------------------Function to check-stock product data from array class------------------------*/
 void checkLowStock(Product products[], int count) {
     int lowDataCount = 0; // Track low products
     Product lowStockProducts[MAX_PRODUCTS];
@@ -640,8 +645,9 @@ void checkLowStock(Product products[], int count) {
     }
     
 }
-//-----------------------------------------------------------------------------------------------------------------//
-// Leo : " First part, need the user to choice first, want to choose ID, name, or Price range "
+//----------------------------------------------------------------------------------------------------------//
+
+/*--------Leo : " First part, need the user to choice first, want to choose ID, name, or Price range-----*/
 void searchProducts(Product products[], int productcount) {
     int searchType;
     cout << "How do you want to search by?" << endl;
@@ -783,10 +789,10 @@ void searchProducts(Product products[], int productcount) {
              << ", Order: " << (order == 1 ? "Ascending" : "Descending") << endl;
     }
 }
+//------------------------------------------------------------------------------------------------------//
 
 
-
-/*------------------------------------------Main Function----------------------------------------------------------*/
+/*------------------------------------------Main Function---------------------------------------------------*/
 int main(){
     Product products[MAX_PRODUCTS]; //Set Product class
     Account accounts[MAX_ACCOUNTS]; //Set Account class
@@ -859,4 +865,4 @@ int main(){
 
     return 0;
 }
-/*-----------------------------------------------------------------------------------------------------------------*/
+//----------------------------------------------------------------------------------------------------------//
