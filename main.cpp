@@ -367,7 +367,7 @@ void updateProduct(Product products[],int productcount) {
     }
 
     int selectedIndex;
-    if (matchCount>1) {//List all the products found.
+    if (matchCount > 1) {//List all the products found.
         cout<<"\nMultiple products found:\n";
         cout<<setw(10)<<"ID"
              <<setw(30)<<"Name"
@@ -380,15 +380,17 @@ void updateProduct(Product products[],int productcount) {
         }
         cout <<"Enter the number (1-"<<matchCount<<") of the product to update: ";
         int choice;
+        cin >> choice;
+
         if (cin.fail()||choice<1||choice>matchCount) {//Detect if user cin text is in invalid, or out of the match area.
             cout<<"Invalid selection.\n";
             cin.clear();
             cin.ignore(1000, '\n');
             return;
         }
-        selectedIndex=matches[choice-1];//In array the first one is 0, so it can find the right one if minus 1.
+        selectedIndex = matches[choice-1];//In array the first one is 0, so it can find the right one if minus 1.
     } else {
-        selectedIndex=matches[0];
+        selectedIndex = matches[0];
     }
 
     string name;
@@ -462,6 +464,7 @@ void deleteProduct(Product products[],int& productcount) {
         }
         cout<<"Enter the number (1-"<<matchCount<<") of the product to delete: ";
         int choice;
+        cin >> choice;
         if (cin.fail()||choice<1||choice>matchCount) {
             cout<<"Invalid selection.\n";
             cin.clear();
