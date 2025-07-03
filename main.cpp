@@ -45,6 +45,7 @@ public:
     int getQty() const { return qty; } // Return product quantity
     int getReorderLevel() const { return reorderlvl; } // Return product reorder level
 };
+
 class Account{
     private: 
     string email, pass, id; 
@@ -814,7 +815,7 @@ int main(){
                 }else{
                     cout << "No products loaded.\n";
                 }
-           
+                break;
 
             case 2: searchProducts(products,productcount);break;
 
