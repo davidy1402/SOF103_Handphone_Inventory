@@ -614,21 +614,29 @@ void accManagement(Account accounts[], int& accountcount, const string& loggedIn
 
 /*---------------------------------Function to check-stock product data from array class---------------------------*/
 void checkLowStock(Product products[], int count) {
-    bool okStock = true; //Check if any products are low
     int lowDataCount = 0; // Track low products
+    Product lowStockProducts[MAX_PRODUCTS];
+
     for (int i = 0; i < count; i++) {
         if (products[i].getQty() <= products[i].getReorderLevel()) { //Compares reorder level and qty
-            cout << endl << "Low stock found at: \n";
-            products[i].displayProduct();   //displays
-            okStock = false;   
-            lowDataCount++;      
+            lowStockProducts[lowDataCount++] = products[i]; //Store low stock products     
         }
     }
-    if (okStock) //Notifies how many products require restock
+    if (lowDataCount == 0) //Notifies how many products require restock
     {
-        cout << "All products are not low stocked!\n";
+        cout << "All products are sufficiently stocked!\n";
     } else {
-        cout << lowDataCount << " products require urgent restock!\n";
+        cout << endl << "\nLow stock found at: \n";
+        cout << setw(10) << "ID"
+             << setw(30) << "Name"
+             << setw(15) << "Price"
+             << setw(15) << "Qty"
+             << setw(15) << "Reorder\n";
+        for (int i = 0; i < lowDataCount; i++) {//Displays low stock
+            lowStockProducts[i].displayProduct();
+        }
+        cout << endl;
+        cout << "Total" << lowDataCount << " product(s) require urgent restock!\n";
     }
     
 }
