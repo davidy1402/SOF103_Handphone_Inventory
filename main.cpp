@@ -25,6 +25,16 @@ private:
     int qty, reorderlvl;
     float price;
 public:
+    // Constructor to initialize product with default values
+    Product(string prod_id = "", string prod_name = "", float prod_price = 0.0,
+            int prod_qty = 0, int prod_reorderlvl = 0) {
+        id = prod_id;
+        name = prod_name;
+        price = prod_price;
+        qty = prod_qty;
+        reorderlvl = prod_reorderlvl;
+    }
+
     void setProduct(string prod_id, string prod_name, float prod_price, int prod_qty, int prod_reorderlvl){
         id = prod_id;  //set product ID
         price = prod_price; //set product price
@@ -53,6 +63,13 @@ class Account{
     private: 
     string email, pass, id; 
     public:
+    // Constructor to initialize account with default values
+    Account(string acc_id = "", string mail = "", string password = "") {
+        id = acc_id; // Set account ID
+        email = mail; // Set email
+        pass = password; // Set password
+    }
+
     void setAcc(string acc_id, string mail, string password){
         email = mail; // Set Mail
         pass = password; // Set Pass
@@ -127,7 +144,7 @@ void saveAcc(Account accounts[],int count){
         <<accounts[i].getPass()<<" "
         <<endl;
     }
-    file.close();                         //Closes file to save memory
+    file.close(); //Closes file to save memory
 }
 //----------------------------------------------------------------------------------------------------------//
 
@@ -176,60 +193,85 @@ void saveData(Product products[],int count){//This is a function that save the d
 /*--------------------------------------------Function for identifying-----------------------------------*/
 bool isValidName(const string& name){
      if(name.empty())return false;//Return false if it is empty.
-     for(int i=0;i<name.length();++i){//i cannot more than parameter length.
-        char c=name[i];//Define a character to get parameter.
-        if (!isalnum(c)&&c!=' ') return false;//Returns false if c is a digit or a letter, or have a space, and true otherwise.
-     }
+     for (char c : name) {
+        if (!isalnum(c) && c != ' ' && c != '_' && c != '+' && c != '-') return false;
+    }
      return true;
 }
 
-string intToString(int num) {//Convert number to string type.
-    if (num==0)return "0";//If a number called 0, return 0 because it is also called 0 in string type.
-    string result = "";//Create a blankspace to store result.
-    while (num>0){//Continue execute if parameter has not turn in 0.
-        int digit =num%10;//Define an integer digit to store parameter which is already mod 10.
-        char ch='0'+digit;/*Define a character call ch to store digit, and there is a 0 because in ASCII represent as 48. 
-                            Integer 1 starts as 49 in ASCII. With this it can turn in character type.*/
-        result=ch+result;//Blankspace will store ch and itself, and ch will be first one so it can add it in front of result.
-        num=num/10;//Get parameter with last number, which is not used in mod 10 form.
-    }
-    return result;//Get the string type after executing while loop.
+bool isValidEmail(const string& email) {
+    // Basic email validation: check for '@' and '.' in the email
+    size_t atPos = email.find('@');
+    size_t dotPos = email.find('.', atPos);
+
+    return (atPos != string::npos && dotPos != string::npos && dotPos > atPos);
 }
 
-string generateNextId(Product products[],int count){//Auto generate next Id.
-    int maxnum=0;
-    for(int i=0;i<count;i++){
-        string id=products[i].getId();//Define a string type id to get product id.
-        if (!id.empty() && id[0] == 'P') {//If id is not in empty type and the first one is P, it continue executes.
-           string numberPart = "";//Create a string numberPart to store item. 
-            for (int j=1;j<id.length();j++) {
-                numberPart+=id[j];//Store id in numberPart.
-            }
-            bool isNumber = true;
-            for (int j=0;j<numberPart.length();j++) {
-                if(numberPart[j]<'0'||numberPart[j]>'9') {//Detect if the number is lower than 0 or higher than 9.
-                    isNumber = false;
-                    break;
-                }
-            }
-            if(isNumber) {//Execute if it is true.
-                int num=0;
-                for (int j=0;j<numberPart.length();j++) {
-                    num=num*10+(numberPart[j]-'0');/*num will become higher because it will multiply 10 every loop,
-                                                     and the numberpart will decrease the first one in array.*/
-                }
-                if(num>maxnum) {
-                    maxnum=num;//maxnum will become num if num is bigger than maxnum.
-                }
+string replaceSpacesWithUnderscores(const string& input) {
+    string result = input;
+    replace(result.begin(), result.end(), ' ', '_');
+    return result;
+}
+
+bool getValidInput(float& value, const string& prompt) {
+    cout << prompt;
+    if (!(cin >> value) || value < 0) {
+        cout << "Invalid input. Value must be non-negative.\n";
+        cin.clear();
+        cin.ignore(10000, '\n');
+        return false;
+    }
+    return true;
+}
+
+bool getValidInput(int& value, const string& prompt) {
+    cout << prompt;
+    if (!(cin >> value) || value < 0) {
+        cout << "Invalid input. Value must be non-negative and integer.\n";
+        cin.clear();
+        cin.ignore(10000, '\n');
+        return false;
+    }
+
+    return true;
+}
+
+string generateNextId(Product products[], int count) {
+    if (count == 0) return "P001"; // If no products exist, start with P001
+    int maxnum = 0;
+    for (int i = 0; i < count; i++) {
+        string id = products[i].getId();
+        if (!id.empty() && id[0] == 'P') {
+            try {
+                int num = stoi(id.substr(1));
+                maxnum = max(maxnum, num);
+            } catch (...) {
+                continue; 
             }
         }
     }
-    int nextnum=maxnum+1;//Get nextnum through plus 1 in maxnum.
-    string result="P";//Define a string type result which has a P at first.
-    if (nextnum<10)result+= "00";//If nextnum is lower than 10, it automatically increase two 0, so it will become hundreds.
-    else if (nextnum<100)result += "0";//If nextnum is lower than 100, it automatically increase 0, so it will become two digits.
-    result +=intToString(nextnum);//Put nextnum in result.
+    string result = "P";
+    int nextnum = maxnum + 1;
+    if (nextnum < 10) result += "00";
+    else if (nextnum < 100) result += "0";
+    result += to_string(nextnum);
     return result;
+}
+
+string generateNextAccId(Account accounts[], int count) {   //This function will generate the next account ID based on existing IDs.
+    int maxnum = 0;
+    for (int i = 0; i < count; i++) {
+        string id = accounts[i].getId();
+        if (!id.empty() && id[0] == 'A') {
+            try {
+                int num = stoi(id.substr(1));
+                maxnum = max(maxnum, num);
+            } catch (...) {
+                continue;
+            }
+        }
+    }
+    return "A" + to_string(maxnum + 1);
 }
 
 int findProductsId(Product products[], int count, const string& searchId, int matches[]) {
@@ -295,43 +337,18 @@ void addProduct(Product products[],int& productcount){
     float price;
     int quantity, reorder;
 
-    cout <<"Enter product name (only letters, numbers, and spaces allowed): ";
+    cout << "Enter product name (only letters, numbers, spaces, +, - are allowed): ";
     cin.ignore();//Empty the buffer area in cin.
     getline(cin, name);
+    name = replaceSpacesWithUnderscores(name);
     if (!isValidName(name)) {
-        cout <<"Invalid name. Only letters, numbers, and spaces are allowed.\n";
+        cout <<"Invalid name. Only letters, numbers, spaces, +, - are allowed.\n";
         return;
     }
 
-    cout<<"Enter the price: ";
-    cin>>price;
-    if (cin.fail()||price < 0){
-        //这里可以放try catch，if 是小数点，if是character，if是负数，if是字母等。
-        cout <<"Invalid input. Price must be positive.\n";
-        cin.clear();//Clear all the cin and the wrong type.
-        cin.ignore(1000, '\n');//Ignore next 1000 word until meet \n.
-        return;
-    }
-
-    cout << "Enter the quantity: ";
-    cin>>quantity;
-    if (cin.fail()||quantity<0){
-        //这里可以放try catch，if 是小数点，if是character，if是负数，if是字母等。
-        cout << "Invalid input. Quantity must be non-negative.\n";
-        cin.clear();
-        cin.ignore(1000, '\n');
-        return;
-    }
-
-    cout<<"Enter the re-order level: ";
-    cin>>reorder;
-    if (cin.fail()||reorder<0){
-        //这里可以放try catch，if 是小数点，if是character，if是负数，if是字母等。
-        cout << "Invalid input. Reorder level must be non-negative.\n";
-        cin.clear();
-        cin.ignore(1000, '\n');
-        return;
-    }
+    if (!getValidInput(price, "Enter the price: ")) return;
+    if (!getValidInput(quantity, "Enter the quantity: ")) return;
+    if (!getValidInput(reorder, "Enter the re-order level: ")) return;
 
     cout <<"\nPlease check the following details:\n";
     cout <<setw(10)<<"ID"
@@ -403,44 +420,37 @@ void updateProduct(Product products[],int productcount) {
     float price;
     int quantity, reorder;
 
-    cout << "Enter new name (only letters, numbers, and spaces allowed): ";
+    cout << "Enter new name (only letters, numbers, and spaces, +, - are allowed): ";
     cin.ignore();
     getline(cin, name);
+    name = replaceSpacesWithUnderscores(name);
     if (!isValidName(name)) {
-        cout << "Invalid name. Only letters, numbers, and spaces are allowed.\n";
+        cout << "Invalid name. Only letters, numbers, and spaces, +, - are allowed.\n";
         return;
     }
 
-    cout<<"Enter the new price: ";
-    cin>>price;
-    if (cin.fail()||price<0){
-        cout << "Invalid input. Price must be positive.\n";
-        cin.clear();
-        cin.ignore(1000, '\n');
-        return;
-    }
+    if (!getValidInput(price, "Enter the new price: ")) return;
+    if (!getValidInput(quantity, "Enter the new quantity: ")) return;
+    if (!getValidInput(reorder, "Enter the new reorder level: ")) return;
 
-    cout<<"Enter the new quantity: ";
-    cin>>quantity;
-    if (cin.fail()||quantity<0){
-        cout << "Invalid input. Quantity must be non-negative.\n";
-        cin.clear();
-        cin.ignore(1000, '\n');
-        return;
-    }
+    cout << "\nPlease check the updated details:\n";
+    cout << setw(10) << "ID" << setw(30) << "Name" << setw(15) << "Price"
+         << setw(15) << "Quantity" << setw(15) << "Reorder\n";
+    cout << setw(10) << products[selectedIndex].getId()
+         << setw(30) << name << setw(15) << fixed << setprecision(2) << price
+         << setw(15) << quantity << setw(15) << reorder << endl;
 
-    cout<<"Enter the new reorder level: ";
-    cin>>reorder;
-    if (cin.fail()|| reorder<0){
-        cout << "Invalid input. Reorder level must be non-negative.\n";
-        cin.clear();
-        cin.ignore(1000, '\n');
-        return;
-    }
+    char confirm;
+    cout << "Do you want to save changes (y/n)? ";
+    cin >> confirm;
 
-    products[selectedIndex].setProduct(products[selectedIndex].getId(), name, price, quantity, reorder);
-    saveData(products, productcount);
-    cout << "Product updated successfully.\n";
+    if (tolower(confirm) == 'y') {
+        products[selectedIndex].setProduct(products[selectedIndex].getId(), name, price, quantity, reorder);
+        saveData(products, productcount);
+        cout << "Product updated successfully.\n";
+    } else {
+        cout << "Product update cancelled.\n";
+    }
 }
 
 void deleteProduct(Product products[],int& productcount) {
@@ -477,20 +487,26 @@ void deleteProduct(Product products[],int& productcount) {
             cin.ignore(1000, '\n');
             return;
         }
-        cout << "You have selected:\n";
-        products[matches[choice-1]].displayProduct();
-        cout << "Are you sure you want to delete this product? (y/n): ";
-        char confirm;
-        cin >> confirm;
-       
-        if (confirm != 'y') {
-            cout << "Product deletion cancelled.\n";
-            return;
-        }
 
-        selectedIndex = matches[choice-1]; // Get the index of the selected product
+        selectedIndex = matches[choice - 1];
+        cout << "\nYou have selected:\n";
+        cout << setw(10) << "ID" << setw(30) << "Name" << setw(15) << "Price"
+             << setw(15) << "Qty" << setw(15) << "Reorder\n";
+        products[selectedIndex].displayProduct();
     } else {
         selectedIndex = matches[0];
+        cout << "\nYou have selected:\n";
+        cout << setw(10) << "ID" << setw(30) << "Name" << setw(15) << "Price"
+             << setw(15) << "Qty" << setw(15) << "Reorder\n";
+        products[selectedIndex].displayProduct();
+    }
+
+    char confirm;
+    cout << "Are you sure you want to delete this product? (y/n): ";
+    cin >> confirm;
+    if (tolower(confirm) != 'y') {
+        cout << "Product deletion cancelled.\n";
+        return;
     }
 
     for(int j=selectedIndex;j<productcount-1;j++) {//Start from selectedIndex, and use productcount-1 to make sure it will not over the area.
@@ -513,6 +529,12 @@ string id, email,pass, confirmPass;
     cout<<"Enter email: ";
     cin.ignore();
     getline(cin, email);
+
+    if (!isValidEmail(email)) {
+    cout << "Invalid email format. Please enter a valid email address (must contain '@' and '.').\n";
+    return;
+    }
+    
     for(int i = 0; i < accountcount; i++) {//to check whether the account to be registered is overlapping with any other registered email 
         if(accounts[i].getEmail() == email) {
             cout << "Error! Email already exists!\n";
@@ -540,7 +562,8 @@ string id, email,pass, confirmPass;
 
 
 
-    id = "A" + to_string(accountcount + 1);//generate id
+    id = generateNextAccId(accounts, accountcount); //generate the next account ID based on existing accounts
+
     accounts[accountcount].setAcc(id, email, pass);
     accountcount++;//add the number of accounts in the list
     saveAcc(accounts,accountcount);
@@ -639,9 +662,8 @@ void checkLowStock(Product products[], int count) {
              << setw(15) << "Reorder\n";
         for (int i = 0; i < lowDataCount; i++) {//Displays low stock
             lowStockProducts[i].displayProduct();
-        }
-        cout << endl;
-        cout << "Total" << lowDataCount << " product(s) require urgent restock!\n";
+        }        cout << endl;
+        cout << "Total " << lowDataCount << " product(s) require urgent restock!\n";
     }
     
 }
@@ -655,8 +677,11 @@ void searchProducts(Product products[], int productcount) {
     cout << "1. Product ID"<< endl;
     cout << "2. Product Name"<< endl;
     cout << "3. Price Range"<< endl;
-    cout << "Please Enter Your choice: "<< endl;
-    cin >> searchType;
+    cout << "Please Enter Your choice: ";    
+    if (!getValidInput(searchType, "") || searchType < 1 || searchType > 3) {
+        cout << "Invalid choice.\n";
+        return;
+    }
 
     Product results[MAX_PRODUCTS]; // all the Store matched results will be stored at this variable.
     int resultCount = 0;           // How many products matched ( amount of the produtcs that matched)
@@ -682,6 +707,7 @@ void searchProducts(Product products[], int productcount) {
         cout << "Enter part or full product name to search: ";
         cin.ignore();                                            // Clear leftover newline
         getline(cin, searchName);
+        searchName = replaceSpacesWithUnderscores(searchName);
 
         // Convert input to lowercase so it will not be case sensitive. 
         transform(searchName.begin(), searchName.end(), searchName.begin(), ::tolower);
@@ -705,6 +731,13 @@ void searchProducts(Product products[], int productcount) {
         cout << " Please Enter maximum price: ";          // the minimum price user want
         cin >> maxPrice;
 
+        if (cin.fail() || minPrice < 0 || maxPrice < 0 || minPrice > maxPrice) { // check if the user input is valid
+            cout << "Invalid input. Please enter valid price range.\n"; // if the user input is invalid, it will print out this message
+            cin.clear(); // clear the cin buffer
+            cin.ignore(1000, '\n'); // ignore the next 1000 characters until it meets a newline character
+            return; // exit the function
+        }
+
         for (int i = 0; i < productcount; i++) {          //to loop through products
             float p = products[i].getPrice();             //get the price from using getPrice()
             if (p >= minPrice && p <= maxPrice) {         //if the product's price is in the range of the minPrice and maxPrice 
@@ -725,6 +758,7 @@ void searchProducts(Product products[], int productcount) {
         return;
     }
 
+    cout << "\nSearch Results:\n";
     // Print table header
     cout << setw(10) << "ID"
          << setw(30) << "Name"
@@ -735,7 +769,7 @@ void searchProducts(Product products[], int productcount) {
     for (int i = 0; i < resultCount; i++) {
         results[i].displayProduct();
     }
-
+    
     // ----------- Ask to Sort -----------
     char sortChoice;
     cout << "Do you want to sort the results? (y/n): ";
@@ -748,30 +782,24 @@ void searchProducts(Product products[], int productcount) {
         cout << "2. Name\n";
         cout << "3. Price\n";
         cout << "Enter option: ";
-        cin >> sortBy;
-        cout << "Enter order (1 for Ascending, 2 for Descending): ";
-        cin >> order;
-
-        // Sort using simple nested loops 
-        for (int i = 0; i < resultCount - 1; i++) {                
-            for (int j = i + 1; j < resultCount; j++) {       // for loop to sort one by one manually
-                bool swap = false;
-                // Check which attribute to sort by
-                if (sortBy == 1) {                            // sort y id
-                    swap = (order == 1) ? (results[i].getId() > results[j].getId()) : (results[i].getId() < results[j].getId());             // Ascending: if left > right, swap; Descending: if left < right, swap;
-                } else if (sortBy == 2) {                     // sort by name
-                    swap = (order == 1) ? (results[i].getName() > results[j].getName()) : (results[i].getName() < results[j].getName());     // Ascending: Alphabetical order; Descending: Z to A;
-                } else if (sortBy == 3) {                     // sort by price
-                    swap = (order == 1) ? (results[i].getPrice() > results[j].getPrice()) : (results[i].getPrice() < results[j].getPrice()); // Ascending: Lowest price to Highest;  Descending: Highest Price to the Lowest.
-                }
-
-                if (swap) {
-                    Product temp = results[i]; // Temporarily hold one product
-                    results[i] = results[j];   // Assign second product to the first production 
-                    results[j] = temp;         // Put the temp product into the second 
-                }
-            }
+        if (!getValidInput(sortBy, "") || sortBy < 1 || sortBy > 3) {
+            cout << "Invalid sort option.\n";
+            return;
         }
+
+        cout << "Enter order (1 for Ascending, 2 for Descending): ";
+        if (!getValidInput(order, "") || order < 1 || order > 2) {
+            cout << "Invalid order.\n";
+            return;
+        }
+
+        // ----------- Sort Results -----------
+        // Using a lambda function to sort the results based on the selected criteria and order.
+        sort(results, results + resultCount, [sortBy, order](const Product& a, const Product& b) {
+            if (sortBy == 1) return order == 1 ? a.getId() < b.getId() : a.getId() > b.getId();
+            if (sortBy == 2) return order == 1 ? a.getName() < b.getName() : a.getName() > b.getName();
+            return order == 1 ? a.getPrice() < b.getPrice() : a.getPrice() > b.getPrice();
+        });
 
         // ----------- Show Sorted Results -----------
         cout << "\nSorted Results:\n";
@@ -843,7 +871,7 @@ int main(){
                 }else{
                     cout << "No products loaded.\n";
                 }
-                break;
+                break; 
 
             case 2: searchProducts(products,productcount);break;
 
