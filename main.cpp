@@ -136,6 +136,7 @@ int loadAcc(Account accounts[]){
     file1.close();
     return count;
 }
+
 void saveAcc(Account accounts[],int count){
     ofstream file("acc_management.txt"); //Opens acc_management for writting
     for(int i=0;i<count;i++){            //Loops and writes into file
