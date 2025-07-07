@@ -145,6 +145,24 @@ void saveAcc(Account accounts[],int count){
         <<accounts[i].getPass()<<" "
         <<endl;
     }
+    ofstream file1("after_acc_management.txt"); //Opens acc_management for writting
+    for(int i=0;i<count;i++){            //Loops and writes into file
+        file1<<accounts[i].getId()<<" "
+        <<accounts[i].getEmail()<<" "
+        <<accounts[i].getPass()<<" "
+        <<endl;
+    }
+    file1.close(); //Closes file to save memory
+    file.close(); //Closes file to save memory
+}
+void beforeAcc(Account accounts[],int count){
+    ofstream file("before_acc_management.txt"); //Opens acc_management for writting
+    for(int i=0;i<count;i++){            //Loops and writes into file
+        file<<accounts[i].getId()<<" "
+        <<accounts[i].getEmail()<<" "
+        <<accounts[i].getPass()<<" "
+        <<endl;
+    }
     file.close(); //Closes file to save memory
 }
 //----------------------------------------------------------------------------------------------------------//
@@ -174,10 +192,6 @@ int loadData(Product products[]) {
     file.close();
     return count;
 }
-//-------------------------------------------------------------------------------------------------------//
-
-
-/*----------------------------Function to edit product data from array class--------------------------------*/
 void saveData(Product products[],int count){//This is a function that save the data input from user.
     ofstream file("inventory.txt");//Open the file to save.
     for(int i=0;i<count;i++){//Save all the data that come from users through array. 
@@ -187,9 +201,30 @@ void saveData(Product products[],int count){//This is a function that save the d
         <<products[i].getQty()<<" "//Get product's quantity.
         <<products[i].getReorderLevel()<<endl;//Get product's reorder level.
     }
+    ofstream file1("after_inventory.txt");//Open the file to save.
+    for(int i=0;i<count;i++){//Save all the data that come from users through array. 
+        file1<<products[i].getId()<<" "//Get products Id.
+        <<products[i].getName()<<" "//Get products name.
+        <<products[i].getPrice()<<" "//Get product's prices.
+        <<products[i].getQty()<<" "//Get product's quantity.
+        <<products[i].getReorderLevel()<<endl;//Get product's reorder level.
+    }
+    file1.close();//Close the file
     file.close();//Close the file
 }
-//----------------------------------------------------------------------------------------------------------//
+void beforeData(Product products[],int count){//This is a function that save the data input from user.
+    ofstream file("before_inventory.txt");//Open the file to save.
+    for(int i=0;i<count;i++){//Save all the data that come from users through array. 
+        file<<products[i].getId()<<" "//Get products Id.
+        <<products[i].getName()<<" "//Get products name.
+        <<products[i].getPrice()<<" "//Get product's prices.
+        <<products[i].getQty()<<" "//Get product's quantity.
+        <<products[i].getReorderLevel()<<endl;//Get product's reorder level.
+    }
+    file.close();//Close the file
+}
+//-------------------------------------------------------------------------------------------------------//
+
 
 /*--------------------------------------------Function for identifying-----------------------------------*/
 bool isValidName(const string& name){
@@ -354,7 +389,7 @@ void addProduct(Product products[],int& productcount){
     cout <<"\nPlease check the following details:\n";
     cout <<setw(10)<<"ID"
          <<setw(30)<<"Name"
-         <<setw(15)<<"Price"
+         <<setw(15)<<"Price (MYR)"
          <<setw(15)<<"Quantity"
          <<setw(15)<<"Reorder level\n";
     cout <<setw(10)<<id
@@ -395,7 +430,7 @@ void updateProduct(Product products[],int productcount) {
         cout<<"\nMultiple products found:\n";
         cout<<setw(10)<<"ID"
              <<setw(30)<<"Name"
-             <<setw(15)<<"Price"
+             <<setw(15)<<"Price (MYR)"
              <<setw(15)<<"Qty"
              <<setw(15)<<"Reorder\n";
         for (int i =0;i<matchCount;i++) {
@@ -472,7 +507,7 @@ void deleteProduct(Product products[],int& productcount) {
         cout<<"\nMultiple products found:\n";
         cout<<setw(10)<<"ID"
              <<setw(30)<<"Name"
-             <<setw(15)<<"Price"
+             <<setw(15)<<"Price (MYR)"
              <<setw(15)<<"Qty"
              <<setw(15)<<"Reorder\n";
         for(int i=0;i<matchCount;i++) {
@@ -520,7 +555,7 @@ void deleteProduct(Product products[],int& productcount) {
 
 //------------------------------------------------------------------------------------------------------------//
 
-/*---------------------------------Function to register new account-------------------------------------*/
+/*-------------------------------------Function to manage accounts---------------------------------------*/
 void registerAccount(Account accounts[],int& accountcount){
 string id, email,pass, confirmPass;
     if(accountcount>=MAX_ACCOUNTS){//to check whether maximum capacity of account has been reached
@@ -570,9 +605,6 @@ string id, email,pass, confirmPass;
     saveAcc(accounts,accountcount);
     cout << "Account registered successfully.\n";
 }
-//-------------------------------------------------------------------------------------------------------//
-
-/*-------------------------------------Function to delete account-------------------------------------------*/
 void deleteAcc(Account accounts[], int& accountcount,const string& loggedInEmail) {
     string email, pass;
     cout << "Enter email of account to delete: ";
@@ -610,10 +642,6 @@ void deleteAcc(Account accounts[], int& accountcount,const string& loggedInEmail
         cout << "Account does not exist or password incorrect!\n";//diplayed if the entered email is not found or the password is incorrect
     }
 }
-
-//----------------------------------------------------------------------------------------------------------//
-
-/*-------------------------------------Function to manage accounts---------------------------------------*/
 void accManagement(Account accounts[], int& accountcount, const string& loggedInEmail) {
     int choice;
     do {//displays the menu infinitely until the user chooses 3(Back to main menu)
@@ -639,6 +667,7 @@ void accManagement(Account accounts[], int& accountcount, const string& loggedIn
         }
     } while (choice!=3);//the loop keeps on repeating until 3 is entered
 }
+
 //-------------------------------------------------------------------------------------------------------//
 
 /*-----------------------------Function to check-stock product data from array class------------------------*/
@@ -827,6 +856,8 @@ int main(){
     Account accounts[MAX_ACCOUNTS]; //Set Account class
     int accountcount = loadAcc(accounts); // Load accounts data from file
     int productcount = loadData(products);// Load product data from file
+    beforeAcc(accounts, accountcount); // Save the initial state of accounts
+    beforeData(products, productcount); // Save the initial state of products
 
     bool allowAccess = false;
     string loggedInEmail; // Store who is logged in
@@ -861,7 +892,7 @@ int main(){
                     cout << "Loaded " << productcount << " products:\n";
                     cout << setw(10) << "ID" 
                         << setw(30) << "Name" 
-                        << setw(15) << "Price" 
+                        << setw(15) << "Price (MYR)" 
                         << setw(15) << "Qty" 
                         << setw(15) << "Reorder\n"; 
 
