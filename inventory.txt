@@ -47,3 +47,4 @@ P047 Xiaomi_14T_Pro 3299 10 5
 P048 Xiaomi_15 4199 5 10
 P049 Xiaomi_17T_Pro 3299 10 5
 P050 Xiaomi_25 4199 5 10
+P051 Google_Phone_Pro_Max_Ultra+ 9999.99 1 5
